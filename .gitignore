@@ -15,6 +15,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# AI/LLM tools
+.claude/
+
 # Temporary files
 *.tmp
 analysis.txt
