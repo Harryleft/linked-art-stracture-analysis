@@ -4,14 +4,17 @@
  */
 
 import { LinkedArtAnalyzer } from './latool-core.js';
+import { translations, fieldLabelMapping } from './translations.js';
 
 class UIController {
     constructor() {
         this.analyzer = new LinkedArtAnalyzer();
         this.currentResult = null;
         this.currentUrl = '';
+        this.currentLang = this.detectLanguage();
 
         this.initElements();
+        this.initLanguage();
         this.attachEventListeners();
     }
 
@@ -35,6 +38,99 @@ class UIController {
         this.results = document.getElementById('results');
         this.resultsContainer = document.getElementById('results-container');
         this.resultCount = document.getElementById('result-count');
+
+        // Language buttons
+        this.langButtons = document.querySelectorAll('.lang-btn');
+    }
+
+    initLanguage() {
+        // Set initial language
+        this.setLanguage(this.currentLang);
+
+        // Attach language switch listeners
+        this.langButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                if (lang !== this.currentLang) {
+                    this.setLanguage(lang);
+                    // Re-render results if available
+                    if (this.currentResult) {
+                        this.displayResults(this.currentResult);
+                    }
+                }
+            });
+        });
+    }
+
+    detectLanguage() {
+        // Try to get from localStorage first
+        const saved = localStorage.getItem('latool-lang');
+        if (saved && (saved === 'en' || saved === 'zh')) {
+            return saved;
+        }
+
+        // Detect from browser
+        const browserLang = navigator.language || navigator.userLanguage;
+        if (browserLang.startsWith('zh')) {
+            return 'zh';
+        }
+        return 'en';
+    }
+
+    setLanguage(lang) {
+        this.currentLang = lang;
+        localStorage.setItem('latool-lang', lang);
+
+        // Update active button
+        this.langButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        // Update HTML lang attribute
+        document.documentElement.lang = lang;
+
+        // Update all translatable elements
+        this.updateTranslations();
+    }
+
+    updateTranslations() {
+        const t = translations[this.currentLang];
+
+        // Update elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            if (t[key]) {
+                el.textContent = t[key];
+            }
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.dataset.i18nPlaceholder;
+            if (t[key]) {
+                el.placeholder = t[key];
+            }
+        });
+
+        // Update titles
+        document.querySelectorAll('[data-i18n-title]').forEach(el => {
+            const key = el.dataset.i18nTitle;
+            if (t[key]) {
+                el.title = t[key];
+            }
+        });
+    }
+
+    t(key) {
+        return translations[this.currentLang][key] || key;
+    }
+
+    getTranslatedLabel(label) {
+        const mappingKey = fieldLabelMapping[label];
+        if (mappingKey) {
+            return this.t(mappingKey);
+        }
+        return label;
     }
 
     attachEventListeners() {
@@ -125,7 +221,8 @@ class UIController {
     displayResults(analysisResult) {
         const formatted = this.analyzer.formatResults(analysisResult);
 
-        this.resultCount.textContent = `${formatted.length} fields found`;
+        // Update result count with translation
+        this.resultCount.textContent = `${formatted.length} ${this.t('fieldsFound')}`;
         this.resultsContainer.innerHTML = '';
 
         formatted.forEach((field, index) => {
@@ -141,12 +238,14 @@ class UIController {
         card.className = 'result-card';
         card.dataset.index = index;
 
+        // Translate the field label
+        const translatedLabel = this.getTranslatedLabel(field.label);
         const isImageField = field.label.toLowerCase().includes('image') || field.label.toLowerCase().includes('thumbnail');
 
         const header = document.createElement('div');
         header.className = 'result-card-header';
         header.innerHTML = `
-            <span class="result-card-label">${this.escapeHtml(field.label)}</span>
+            <span class="result-card-label">${this.escapeHtml(translatedLabel)}</span>
             <span class="result-card-toggle">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -185,9 +284,12 @@ class UIController {
     createValueDiv(value, isImageField) {
         const div = document.createElement('div');
 
+        // Translate "Not found" message
+        const notFoundText = this.t('notFound');
+
         if (value === 'Not found') {
             div.className = 'result-value not-found';
-            div.textContent = value;
+            div.textContent = notFoundText;
             return div;
         }
 
@@ -251,10 +353,11 @@ class UIController {
         const formatted = this.analyzer.formatResults(this.currentResult);
 
         formatted.forEach(field => {
-            yaml += `${field.label}:\n`;
+            const translatedLabel = this.getTranslatedLabel(field.label);
+            yaml += `${translatedLabel}:\n`;
             field.values.forEach(value => {
                 if (value === 'Not found') {
-                    yaml += `  - "Not found"\n`;
+                    yaml += `  - "${this.t('notFound')}"\n`;
                 } else if (value.includes('\n')) {
                     // Handle multiline values
                     const lines = value.split('\n');
@@ -271,7 +374,7 @@ class UIController {
 
         // Add log messages if available
         if (this.currentResult.logMessages.length > 0) {
-            yaml += 'Log Messages:\n';
+            yaml += `${this.t('fieldLogMessages')}:\n`;
             this.currentResult.logMessages.forEach(msg => {
                 yaml += `  - ${this.escapeYaml(msg)}\n`;
             });

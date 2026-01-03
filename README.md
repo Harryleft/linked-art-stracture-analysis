@@ -1,6 +1,6 @@
 # Linked Art 数据分析工具
 
-一个 Node.js 命令行应用程序，用于处理和分析来自文化遗产机构的 Linked Art JSON 数据。
+一个用于处理和分析来自文化遗产机构的 Linked Art JSON 数据的工具，提供命令行界面和 Web 界面两种使用方式。
 
 ## 项目简介
 
@@ -29,7 +29,30 @@ npm install
 
 ## 使用方法
 
-### 基本语法
+### Web 界面（推荐）
+
+启动本地服务器：
+
+```bash
+# 使用 Python
+python -m http.server 8080
+
+# 或使用 Node.js
+npx http-server -p 8080
+```
+
+然后在浏览器中访问 `http://localhost:8080`
+
+**Web 界面功能：**
+- 实时 URL 验证
+- 可折叠的结果卡片
+- 图像预览支持
+- YAML 格式导出
+- 响应式设计，支持移动设备
+
+### 命令行界面
+
+#### 基本语法
 
 ```bash
 node latool.js <URL> [选项]
@@ -76,7 +99,13 @@ node latool.js https://lux.collections.yale.edu/data/person/d7d7e27e-3dab-4fab-b
 
 ```
 taiwanken/
-├── latool.js                    # 主应用程序
+├── index.html                   # Web 界面入口
+├── latool.js                    # 命令行工具
+├── js/
+│   ├── latool-core.js          # 核心处理逻辑（浏览器兼容）
+│   └── ui.js                    # UI 交互逻辑
+├── css/
+│   └── style.css               # 样式文件
 ├── package.json                 # 项目依赖
 ├── CLAUDE.md                    # Claude Code 指南
 ├── README.md                    # 项目文档

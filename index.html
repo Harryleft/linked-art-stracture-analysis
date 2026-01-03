@@ -11,8 +11,12 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <h1 class="title">Linked Art Analysis Tool</h1>
-                <p class="subtitle">Analyze and explore cultural heritage data from museum collections APIs</p>
+                <h1 class="title" data-i18n="title">Linked Art Analysis Tool</h1>
+                <p class="subtitle" data-i18n="subtitle">Analyze and explore cultural heritage data from museum collections APIs</p>
+            </div>
+            <div class="lang-switch">
+                <button class="lang-btn" data-lang="en" title="English">EN</button>
+                <button class="lang-btn" data-lang="zh" title="中文">中文</button>
             </div>
         </header>
 
@@ -26,25 +30,26 @@
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                         </svg>
-                        Linked Art URL
+                        <span data-i18n="urlLabel">Linked Art URL</span>
                     </label>
                     <div class="input-wrapper">
                         <input
                             type="url"
                             id="url-input"
                             class="url-input"
+                            data-i18n-placeholder="urlPlaceholder"
                             placeholder="https://lux.collections.yale.edu/data/object/..."
                             autocomplete="off"
                             spellcheck="false"
                         >
-                        <button id="clear-btn" class="clear-btn" title="Clear input">
+                        <button id="clear-btn" class="clear-btn" data-i18n-title="clear" title="Clear input">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
                         </button>
                     </div>
-                    <div class="input-hint">
+                    <div class="input-hint" data-i18n="urlHint">
                         Enter a Linked Art JSON endpoint URL from supported institutions
                     </div>
                 </div>
@@ -56,23 +61,23 @@
                             <circle cx="12" cy="12" r="3"></circle>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                         </svg>
-                        Display Options
+                        <span data-i18n="optionsTitle">Display Options</span>
                     </div>
                     <div class="options-grid">
                         <label class="option-checkbox">
                             <input type="checkbox" id="concise-mode" class="checkbox-input">
                             <span class="checkbox-custom"></span>
-                            <span class="checkbox-label">Concise mode</span>
+                            <span class="checkbox-label" data-i18n="conciseMode">Concise mode</span>
                         </label>
                         <label class="option-checkbox">
                             <input type="checkbox" id="found-only" class="checkbox-input">
                             <span class="checkbox-custom"></span>
-                            <span class="checkbox-label">Found entries only</span>
+                            <span class="checkbox-label" data-i18n="foundOnly">Found entries only</span>
                         </label>
                         <label class="option-checkbox">
                             <input type="checkbox" id="show-logs" class="checkbox-input">
                             <span class="checkbox-custom"></span>
-                            <span class="checkbox-label">Show all logs</span>
+                            <span class="checkbox-label" data-i18n="showLogs">Show all logs</span>
                         </label>
                     </div>
                 </div>
@@ -80,7 +85,7 @@
                 <!-- Action Buttons -->
                 <div class="actions">
                     <button id="analyze-btn" class="btn btn-primary" disabled>
-                        <span class="btn-text">Analyze</span>
+                        <span class="btn-text" data-i18n="analyze">Analyze</span>
                         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
@@ -91,7 +96,7 @@
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
-                        <span class="btn-text">Export YAML</span>
+                        <span class="btn-text" data-i18n="exportYaml">Export YAML</span>
                     </button>
                 </div>
             </section>
@@ -99,8 +104,8 @@
             <!-- Loading State -->
             <div id="loading" class="loading hidden">
                 <div class="spinner"></div>
-                <p class="loading-text">Fetching and analyzing data...</p>
-                <button id="cancel-btn" class="btn btn-text-only">Cancel</button>
+                <p class="loading-text" data-i18n="loading">Fetching and analyzing data...</p>
+                <button id="cancel-btn" class="btn btn-text-only" data-i18n="cancel">Cancel</button>
             </div>
 
             <!-- Error State -->
@@ -110,14 +115,14 @@
                     <line x1="12" y1="8" x2="12" y2="12"></line>
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                 </svg>
-                <h3 class="error-title">Error</h3>
+                <h3 class="error-title" data-i18n="error">Error</h3>
                 <p id="error-message" class="error-message"></p>
             </div>
 
             <!-- Results Section -->
             <section id="results" class="results-section hidden">
                 <div class="results-header">
-                    <h2 class="results-title">Analysis Results</h2>
+                    <h2 class="results-title" data-i18n="resultsTitle">Analysis Results</h2>
                     <div class="results-meta">
                         <span id="result-count" class="result-count"></span>
                     </div>
@@ -128,13 +133,13 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <p class="footer-text">
+            <p class="footer-text" data-i18n="footerText">
                 Built for analyzing Linked Art data from cultural heritage institutions
             </p>
             <p class="footer-links">
-                <a href="https://linked.art/api/1.0/" target="_blank" rel="noopener">Linked Art API</a>
+                <a href="https://linked.art/api/1.0/" target="_blank" rel="noopener" data-i18n="linkedArtApi">Linked Art API</a>
                 <span class="separator">•</span>
-                <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://github.com/" target="_blank" rel="noopener" data-i18n="github">GitHub</a>
             </p>
         </footer>
     </div>
