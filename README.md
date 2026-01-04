@@ -1,10 +1,16 @@
 # Linked Art Analysis Tool
 
+> Chinese document is here: [中文文档](README.zh-CN.md)
+
 A web platform for analyzing Linked Art JSON data from GLAM institutions.
 
 ## Overview
 
 This tool extracts structured information from Linked Art JSON-LD data published by GLAM (Galleries, Libraries, Archives, Museums) and presents it in a human-readable format.
+
+![01](image\01.jpg)
+
+
 
 ## Key Features
 
@@ -13,6 +19,8 @@ This tool extracts structured information from Linked Art JSON-LD data published
 - Extract structured metadata: names, creators, dates, dimensions, materials, etc.
 - Getty vocabulary parsing (AAT/TGN/ULAN)
 - IIIF manifest processing
+
+
 
 ## Quick Start
 
@@ -39,9 +47,19 @@ Then open the server address in your browser (e.g., `http://localhost:8080`)
 
 1. Paste a Linked Art API URL into the input field
 2. Click the "Analyze" button
-3. Switch between different views to explore results:
-   - **JSON-LD Structure View**: View data structure and vocabulary references
-   - **Complete Entity View**: Explore all properties
+3. **Switch JSON-LD Structure View**: View data structure and vocabulary references
+
+![02](image\02.jpg)
+
+4. **Switch Complete Entity View**: Explore all properties
+
+![03](image\03.jpg)
+
+And you can click every card:
+
+![04](image\04.jpg)
+
+
 
 ## Project Structure
 
@@ -77,8 +95,7 @@ Issues and Pull Requests are welcome.
 
 ## License
 
-Please refer to the project license file.
+MIT
 
----
 
-[中文文档](README.zh-CN.md)
+

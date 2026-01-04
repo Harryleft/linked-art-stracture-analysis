@@ -1,10 +1,16 @@
 # Linked Art 数据分析工具
 
+> English document is here: [English](README.md)
+
 一个用于分析来自GLAM机构的 Linked Art JSON 数据的 Web 平台。
 
 ## 项目简介
 
 该工具从GLAM（美术馆、图书馆、档案馆、博物馆）发布的 Linked Art JSON-LD 数据中提取结构化信息，并以可读格式呈现给用户。
+
+![01](image\01.jpg)
+
+
 
 ## 核心功能
 
@@ -13,6 +19,8 @@
 - 提取结构化元数据：名称、创作者、日期、尺寸、材料等
 - Getty 词汇表解析（AAT/TGN/ULAN）
 - IIIF 清单处理
+
+
 
 ## 快速开始
 
@@ -39,9 +47,19 @@ npx http-server -p 8080
 
 1. 在输入框中粘贴 Linked Art API 的 URL
 2. 点击"分析"按钮
-3. 切换不同视图查看结果：
-   - **JSON-LD 视图**：查看数据结构和词汇表引用
-   - **完整实体视图**：探索所有属性
+3. **切换 JSON-LD 视图**：查看数据结构和词汇表引用
+
+![02](image\02.jpg)
+
+4. **切换完整实体视图**：探索所有属性
+
+![03](image\03.jpg)
+
+点击每个卡片可以查看详情：
+
+![04](image\04.jpg)
+
+
 
 ## 项目结构
 
@@ -77,8 +95,7 @@ src/
 
 ## 许可证
 
-请查看项目许可证文件。
+MIT
 
----
 
-[English](README.md)
+
