@@ -60,10 +60,6 @@ export class ViewManager {
             ? analysis.vocabularies.map(v => v.name).join(', ')
             : 'None';
 
-        if (analysis.id) {
-            this.elements.jsonldEntityType.innerHTML += `<br><small style="color:var(--color-text-muted)">ID: ${this.escapeHtml(analysis.id)}</small>`;
-        }
-
         this.displayVocabularies(analysis.vocabularies || []);
         this.displayPropertyTree(analysis.structure);
     }
