@@ -80,10 +80,6 @@ src/
 │       └── complete-entity-view.js # 完整实体视图
 ├── css/
 │   └── style.css                # 样式文件
-├── data/                        # 示例数据文件
-│   ├── physical-objects/        # 物理对象示例
-│   ├── visual-items/            # 视觉项目示例
-│   └── exhibitions/             # 展览数据示例
 ├── package.json                 # 项目配置
 ├── CLAUDE.md                    # Claude Code 指南
 └── README.md                    # 项目文档

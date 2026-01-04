@@ -80,10 +80,6 @@ src/
 │       └── complete-entity-view.js # Complete entity view
 ├── css/
 │   └── style.css                # Stylesheet
-├── data/                        # Sample data files
-│   ├── physical-objects/        # Physical object samples
-│   ├── visual-items/            # Visual item samples
-│   └── exhibitions/             # Exhibition data samples
 ├── package.json                 # Project configuration
 ├── CLAUDE.md                    # Claude Code guide
 └── README.md                    # Project documentation
