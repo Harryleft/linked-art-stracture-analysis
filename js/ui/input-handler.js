@@ -23,6 +23,8 @@ export class InputHandler {
             this.urlInput.focus();
             this.onInput();
         });
+
+        this.analyzeBtn.addEventListener('click', () => this.triggerAnalyze());
     }
 
     onAnalyze(callback) {
