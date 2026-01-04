@@ -59,7 +59,11 @@ And you can click every card:
 
 ![04](image/04.jpg)
 
+### Data Display Notes
 
+**Entity Types Display**: Some entity types may show full URLs instead of readable labels. This occurs when the original data source lacks the `_label` field for certain type definitions. The tool displays the available identifier URL in these cases.
+
+**Entity ID**: The entity's unique identifier is shown in muted gray below the entity type for reference.
 
 ## Project Structure
 

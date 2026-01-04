@@ -61,7 +61,7 @@ export class ViewManager {
             : 'None';
 
         if (analysis.id) {
-            this.elements.jsonldEntityType.innerHTML += `<br><small style="color:var(--color-text-muted)">${this.escapeHtml(analysis.id)}</small>`;
+            this.elements.jsonldEntityType.innerHTML += `<br><small style="color:var(--color-text-muted)">ID: ${this.escapeHtml(analysis.id)}</small>`;
         }
 
         this.displayVocabularies(analysis.vocabularies || []);
