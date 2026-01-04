@@ -1,6 +1,6 @@
 # Linked Art 数据分析工具
 
-一个用于处理和分析来自文化遗产机构的 Linked Art JSON 数据的工具，提供命令行界面和 Web 界面两种使用方式。
+一个用于处理和分析来自文化遗产机构的 Linked Art JSON 数据的 Web 应用程序。
 
 ## 项目简介
 
@@ -26,23 +26,15 @@
 - **导出功能**：YAML 格式导出
 - **响应式设计**：支持移动设备
 
-## 安装
+## 快速开始
 
 ### 前置要求
 
-- Node.js（建议使用 LTS 版本，支持 ES6 模块）
+- 现代浏览器（支持 ES6 模块）
 
-### 安装依赖
+### 启动应用
 
-```bash
-npm install
-```
-
-## 使用方法
-
-### Web 界面（推荐）
-
-启动本地服务器：
+启动本地 HTTP 服务器：
 
 ```bash
 # 使用 npx serve
@@ -57,79 +49,54 @@ npx http-server -p 8080
 
 然后在浏览器中访问服务器地址（如 `http://localhost:8080`）
 
-**注意**：Web 界面需要通过 HTTP 服务器访问，直接打开 `file://` 协议会有 CORS 限制。
+**注意**：Web 应用需要通过 HTTP 服务器访问，直接打开 `file://` 协议会有 CORS 限制。
 
-### 命令行界面
+### 使用方法
 
-#### 基本语法
-
-```bash
-node latool.js <URL> [选项]
-```
-
-#### 命令行选项
-
-| 选项 | 说明 |
-|------|------|
-| `--log` | 显示详细日志消息 |
-| `--concise` | 仅显示主要信息 |
-| `--found` | 仅显示找到的项目，跳过 "Not found" 条目 |
-| `--save=filename.yaml` | 保存结果到 YAML 文件 |
-
-#### 使用示例
-
-```bash
-# 基本用法
-node latool.js https://lux.collections.yale.edu/data/person/d7d7e27e-3dab-4fab-b049-f09c76de18fe
-
-# 带日志和文件输出
-node latool.js https://lux.collections.yale.edu/data/person/d7d7e27e-3dab-4fab-b049-f09c76de18fe --log --save=analysis.yaml
-
-# 简洁输出
-node latool.js https://lux.collections.yale.edu/data/person/d7d7e27e-3dab-4fab-b049-f09c76de18fe --concise
-```
+1. 在输入框中粘贴 Linked Art API 的 URL
+2. 点击"分析"按钮
+3. 切换不同视图查看结果：
+   - **标准视图**：查看提取的字段数据
+   - **JSON-LD 视图**：查看数据结构和词汇表引用
+   - **完整实体视图**：深度探索所有属性
+4. 点击"导出"按钮保存为 YAML 文件
 
 ## 数据提取内容
 
 工具可从 Linked Art 数据中提取以下信息：
 
-- 名称和标题（主要、展览、前称）
-- 登录号和标识符
-- 创作者信息和归属
-- 作品类型和分类
-- 制作日期和时间跨度
-- 尺寸（结构化格式和陈述格式）
-- 材料和技术
-- 地理位置和所有权历史
-- IIIF 清单和数字图像
-- 网络引用和描述
+| 类别 | 提取内容 |
+|------|---------|
+| **标识信息** | 名称和标题（主要、展览、前称）、登录号和标识符 |
+| **创作信息** | 创作者信息和归属、制作日期和时间跨度 |
+| **物理特征** | 作品类型和分类、尺寸（结构化格式和陈述格式）、材料和技术 |
+| **关联信息** | 地理位置、所有权历史、IIIF 清单和数字图像 |
+| **描述信息** | 网络引用、描述、信誉来源、引用 |
 
 ## 项目结构
 
 ```
 taiwanken/
-├── index.html                   # Web 界面入口
-├── latool.js                    # CLI 命令行工具
+├── index.html                   # Web 应用入口
 ├── js/
-│   ├── latool-core.js          # 核心分析逻辑
-│   ├── jsonld-analyzer.js      # JSON-LD 结构分析
-│   ├── complete-parser.js      # 完整实体递归解析
-│   ├── translations.js         # 国际化翻译
-│   └── ui/                     # UI 组件模块
-│       ├── main.js             # 主控制器
-│       ├── language-manager.js # 语言管理
-│       ├── input-handler.js    # 输入处理
-│       ├── results-renderer.js # 结果渲染
-│       ├── view-manager.js     # 视图管理
-│       ├── export-handler.js   # 导出处理
+│   ├── latool-core.js           # 核心分析逻辑
+│   ├── jsonld-analyzer.js       # JSON-LD 结构分析
+│   ├── complete-parser.js       # 完整实体递归解析
+│   ├── translations.js          # 国际化翻译
+│   ├── ui.js                    # 旧版UI控制器 (已弃用)
+│   └── ui/                      # 模块化 UI 组件
+│       ├── main.js              # 主控制器
+│       ├── language-manager.js  # 语言管理
+│       ├── input-handler.js     # 输入处理
+│       ├── view-manager.js      # 视图管理
 │       └── complete-entity-view.js # 完整实体视图
 ├── css/
-│   └── style.css               # 样式文件
-├── lib/                        # CLI 库文件
-│   ├── parser.js               # 数据解析器
-│   └── utils.js                # 工具函数
-├── data/                       # 示例数据文件
-├── package.json                 # 项目依赖
+│   └── style.css                # 样式文件
+├── data/                        # 示例数据文件
+│   ├── physical-objects/        # 物理对象示例
+│   ├── visual-items/            # 视觉项目示例
+│   └── exhibitions/             # 展览数据示例
+├── package.json                 # 项目配置
 ├── CLAUDE.md                    # Claude Code 指南
 └── README.md                    # 项目文档
 ```
@@ -138,14 +105,6 @@ taiwanken/
 
 ### 处理流程
 
-#### CLI 流程
-1. **数据获取** - 向 Linked Art API 发送 HTTP 请求
-2. **ID 扩展** - 将紧凑 ID 转换为完整 URI
-3. **模式匹配** - 使用预定义模式提取结构化数据
-4. **词汇解析** - Getty AAT/TGN/ULAN URI 查找
-5. **输出生成** - 控制台显示和/或 YAML 导出
-
-#### Web 流程
 1. **用户输入** - URL 验证和选项配置
 2. **数据获取** - fetch API 获取 JSON 数据
 3. **多模式分析**
@@ -162,53 +121,120 @@ taiwanken/
 | JsonLdAnalyzer | js/jsonld-analyzer.js | JSON-LD 结构分析 |
 | CompleteParser | js/complete-parser.js | 递归实体解析 |
 | UIController | js/ui/main.js | UI 主控制器 |
+| ViewManager | js/ui/view-manager.js | 视图切换管理 |
+| CompleteEntityView | js/ui/complete-entity-view.js | 完整实体视图渲染 |
+| LanguageManager | js/ui/language-manager.js | 语言切换管理 |
 
-### 核心依赖
+### 技术栈
 
-- `node-fetch` - HTTP 请求
-- `js-yaml` - YAML 格式输出
+- 纯 JavaScript (ES6 模块)
+- 原生 fetch API
+- 无外部依赖
 
 ## 开发
 
-### 添加新功能
+### 修改核心逻辑
 
-1. **核心逻辑修改**：编辑 `js/latool-core.js` 中的 `LinkedArtAnalyzer` 类
-2. **新增视图**：在 `index.html` 添加视图面板，在 `js/ui/view-manager.js` 添加切换逻辑
-3. **添加翻译**：在 `js/translations.js` 的 `en` 和 `zh` 对象中添加键值对
+1. 编辑 `js/latool-core.js` 中的 `LinkedArtAnalyzer` 类
+2. 修改 `js/complete-parser.js` 中的解析函数
+3. 修改 `js/jsonld-analyzer.js` 中的结构分析
+4. 刷新浏览器测试
+
+### 新增视图
+
+1. 在 `index.html` 添加视图面板和标签
+```html
+<button class="view-tab" data-view="newview">新视图</button>
+<div id="view-newview" class="view-panel hidden">
+    <!-- 视图内容 -->
+</div>
+```
+
+2. 在 `js/ui/view-manager.js` 添加视图切换逻辑
+3. 在 `js/translations.js` 添加对应的翻译键
+
+### 添加翻译
+
+1. 编辑 `js/translations.js`
+2. 在 `en` 和 `zh` 对象中添加相同的键值对
+```javascript
+export const translations = {
+    zh: {
+        newKey: '新的翻译文本',
+    },
+    en: {
+        newKey: 'New translated text',
+    }
+};
+```
+3. 使用 `data-i18n` 属性在 HTML 中引用
+```html
+<span data-i18n="newKey"></span>
+```
 
 ### 测试
 
 1. 使用实际的 Linked Art API 端点进行测试
-2. 验证 Getty 词汇解析功能仍然正常
-3. 检查 YAML 输出格式保持有效
-4. 确保与现有 JSON 示例的向后兼容性
-5. 测试三种视图模式都正常工作
-6. 测试中英文语言切换
+2. 验证 Getty 词汇解析功能正常
+3. 确保与现有 JSON 示例的向后兼容性
+4. 测试三种视图模式正常工作
+5. 测试中英文语言切换
+6. 验证数组元素的展开/折叠功能
 
 ### 调试
 
-Web 界面支持浏览器控制台调试：
-- 打开浏览器开发者工具
+- 打开浏览器开发者工具（F12）
 - 查看 Console 面板的日志输出
 - 使用 Network 面板查看 API 请求
+- 检查 Elements 面板验证 DOM 结构
 
 ## 注意事项
 
-- Web 界面需要 HTTP 服务器（`file://` 协议有 CORS 限制）
+- Web 应用需要 HTTP 服务器（`file://` 协议有 CORS 限制）
 - 没有自动化测试套件，需要手动验证
 - 模块化架构使修改更简单
 - 错误处理专注于数据质量验证
+- JSON-LD 结构树支持数组元素的展开/折叠
+- 完整实体视图使用模态框显示属性详情
 
 ## 测试数据
 
-测试 URL 示例：
-- 耶鲁大学：`https://linked-art.library.yale.edu/node/94421bee-dbb5-4401-b33d-7bbfe87e4f90`
-- 乔治亚·欧姬芙博物馆：`https://api.okeeffemuseum.org/object/1`
+### 测试 URL 示例
 
-## 许可证
+**耶鲁大学艺术画廊：**
+- Person: `https://linked-art.library.yale.edu/node/94421bee-dbb5-4401-b33d-7bbfe87e4f90`
+- Object: `https://lux.collections.yale.edu/data/object/4d72f8e8-e6e1-5ddb-9b52-28ffa9110530`
 
-请查看项目许可证文件。
+**乔治亚·欧姬芙博物馆：**
+- Object: `https://api.okeeffemuseum.org/object/1`
+
+**Numismatics.org：**
+- Coin: `https://numismatics.org/collection/1944.100.30575`
+
+### 本地示例数据
+
+项目包含多个本地示例 JSON 文件：
+- `data/physical-objects/` - 物理对象示例
+- `data/visual-items/` - 视觉项目示例
+- `data/exhibitions/` - 展览数据示例
+
+## 浏览器兼容性
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14.1+
+
+需要支持以下特性：
+- ES6 模块
+- Fetch API
+- async/await
+- CSS Grid 和 Flexbox
+- CSS 变量
 
 ## 贡献
 
 欢迎提交 Issue 和 Pull Request。
+
+## 许可证
+
+请查看项目许可证文件。
