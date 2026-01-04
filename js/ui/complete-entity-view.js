@@ -149,40 +149,63 @@ export class CompleteEntityView {
         let html = '';
 
         if (node.type === 'entity') {
+            const hasChildren = node.properties && Object.keys(node.properties).length > 0;
             html += `<div class="tree-node ${depth === 0 ? 'root' : ''}">`;
             html += `<div class="tree-header">`;
-            html += `<span class="tree-toggle">▶</span>`;
+            if (hasChildren) {
+                html += `<span class="tree-toggle expanded">▼</span>`;
+            }
             html += `<span class="tree-key">${node.entityType || 'Entity'}</span>`;
             if (node.label) html += `<span class="tree-value">"${this.escapeHtml(node.label)}"</span>`;
             if (node.id) html += `<span class="tree-value"><a href="${node.id}" target="_blank">${this.escapeHtml(node.id.substring(0, 60))}</a></span>`;
             if (node._truncated) html += `<span class="tree-type">[truncated]</span>`;
             html += `</div>`;
-            html += `<div class="tree-children">`;
-
-            for (const [key, value] of Object.entries(node.properties || {})) {
-                html += this.buildPropertyNode(key, value, depth + 1);
+            if (hasChildren) {
+                html += `<div class="tree-children expanded">`;
+                for (const [key, value] of Object.entries(node.properties || {})) {
+                    html += this.buildPropertyNode(key, value, depth + 1);
+                }
+                html += `</div>`;
             }
 
-            html += `</div></div>`;
+            html += `</div>`;
         } else if (node.type === 'array') {
+            const hasChildren = node.items && node.items.length > 0;
             html += `<div class="tree-node">`;
             html += `<div class="tree-header">`;
-            html += `<span class="tree-toggle">▶</span>`;
+            if (hasChildren) {
+                html += `<span class="tree-toggle expanded">▼</span>`;
+            }
             html += `<span class="tree-key">array[${node.items?.length || 0}]</span>`;
             html += `</div>`;
-            html += `<div class="tree-children">`;
-
-            node.items?.forEach((item, index) => {
-                html += `<div class="tree-node">`;
-                html += `<div class="tree-header">`;
-                html += `<span class="tree-key">[${index}]</span>`;
+            if (hasChildren) {
+                html += `<div class="tree-children expanded">`;
+                node.items?.forEach((item, index) => {
+                    html += `<div class="tree-node">`;
+                    html += `<div class="tree-header">`;
+                    const itemHasChildren = item.type === 'entity' || item.type === 'array';
+                    if (itemHasChildren) {
+                        html += `<span class="tree-toggle expanded">▼</span>`;
+                    }
+                    html += `<span class="tree-key">[${index}]</span>`;
+                    if (item.type === 'entity') {
+                        html += `<span class="tree-type">${item.entityType || item.type}</span>`;
+                        if (item.label) html += `<span class="tree-value">"${this.escapeHtml(item.label)}"</span>`;
+                    } else if (item.type === 'array') {
+                        html += `<span class="tree-type">array[${item.items?.length || 0}]</span>`;
+                    }
+                    html += `</div>`;
+                    if (itemHasChildren) {
+                        html += `<div class="tree-children expanded">`;
+                        html += this.buildTreeNode(item, depth + 1, '');
+                        html += `</div>`;
+                    }
+                    html += `</div>`;
+                });
                 html += `</div>`;
-                html += `<div class="tree-children">`;
-                html += this.buildTreeNode(item, depth + 1, '');
-                html += `</div></div>`;
-            });
+            }
 
-            html += `</div></div>`;
+            html += `</div>`;
         } else if (node.type === 'literal') {
             const value = node.value === null ? 'null' : JSON.stringify(node.value);
             html += `<div class="tree-node">`;
