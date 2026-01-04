@@ -2,7 +2,7 @@
  * Complete Entity View - Handles the complete entity parsing and display
  */
 
-import { parseEntity, getParsedEntityStats, getEntityHierarchy, getPropertyByPath } from '../complete-parser.js';
+import { parseEntity, getEntityHierarchy, getPropertyByPath } from '../complete-parser.js';
 
 export class CompleteEntityView {
     constructor(elements, languageManager) {
@@ -42,9 +42,6 @@ export class CompleteEntityView {
                 { resolveReferences: true, maxDepth: Infinity, currentDepth: 0, visited: new Set() }
             );
 
-            const stats = getParsedEntityStats(this.parsedEntity);
-
-            this.updateDashboard(stats);
             this.renderPropertyGrid(this.parsedEntity);
 
             this.hideLoading();
@@ -53,16 +50,6 @@ export class CompleteEntityView {
             console.error('[CompleteEntityView] Error:', error);
             throw error;
         }
-    }
-
-    updateDashboard(stats) {
-        this.elements.completeEntityTitle.textContent = stats.label || 'Unnamed Entity';
-        this.elements.completeEntityId.textContent = stats.id || 'No ID';
-        this.elements.completeStatProperties.textContent = stats.propertyCount;
-        this.elements.completeStatNested.textContent = stats.nestedEntityCount;
-        this.elements.completeStatArrays.textContent = stats.arrayCount;
-        this.elements.completeStatRefs.textContent = stats.hasReferences ? 'Yes' : 'No';
-        this.elements.completeStatDepth.textContent = stats.maxDepth;
     }
 
     renderPropertyGrid(parsed) {
@@ -237,7 +224,6 @@ export class CompleteEntityView {
 
         if (value.type === 'entity') {
             if (value.label) html += `<span class="tree-value">"${this.escapeHtml(value.label)}"</span>`;
-            if (value.id) html += `<span class="tree-value"><a href="${value.id}" target="_blank">link</a></span>`;
             html += `<span class="tree-type">${value.entityType}</span>`;
         } else if (value.type === 'array') {
             html += `<span class="tree-type">array[${value.items?.length || 0}]</span>`;

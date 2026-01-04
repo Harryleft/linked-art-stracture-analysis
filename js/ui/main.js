@@ -1,16 +1,13 @@
 /**
- * Main UI Controller - Coordinates all UI modules
+ * Main UI Controller - Simplified for Complete Entity View only
  */
 
-import { JsonLdAnalyzer } from '../jsonld-analyzer.js';
 import { LanguageManager } from './language-manager.js';
 import { InputHandler } from './input-handler.js';
-import { ViewManager } from './view-manager.js';
 import { CompleteEntityView } from './complete-entity-view.js';
 
 export class UIController {
     constructor() {
-        this.jsonldAnalyzer = new JsonLdAnalyzer();
         this.currentUrl = '';
         this.rawJsonData = null;
 
@@ -32,24 +29,8 @@ export class UIController {
         this.errorMessage = document.getElementById('error-message');
         this.results = document.getElementById('results');
 
-        // JSON-LD view elements
-        const jsonldElements = {
-            jsonldEntityType: document.getElementById('jsonld-entity-type'),
-            jsonldPropertyCount: document.getElementById('jsonld-property-count'),
-            jsonldVocabSources: document.getElementById('jsonld-vocab-sources'),
-            jsonldVocabList: document.getElementById('jsonld-vocab-list'),
-            jsonldTree: document.getElementById('jsonld-tree')
-        };
-
         // Complete Entity view elements
         const completeElements = {
-            completeEntityTitle: document.getElementById('complete-entity-title'),
-            completeEntityId: document.getElementById('complete-entity-id'),
-            completeStatProperties: document.getElementById('complete-stat-properties'),
-            completeStatNested: document.getElementById('complete-stat-nested'),
-            completeStatArrays: document.getElementById('complete-stat-arrays'),
-            completeStatRefs: document.getElementById('complete-stat-refs'),
-            completeStatDepth: document.getElementById('complete-stat-depth'),
             completeSearch: document.getElementById('complete-search'),
             propertyGrid: document.getElementById('property-grid'),
             detailModal: document.getElementById('detail-modal'),
@@ -60,7 +41,6 @@ export class UIController {
             loading: this.loading
         };
 
-        this.jsonldElements = jsonldElements;
         this.completeElements = completeElements;
     }
 
@@ -78,37 +58,16 @@ export class UIController {
         this.inputHandler.init();
         this.inputHandler.onAnalyze((url) => this.analyze(url));
 
-        // View Manager
-        this.viewManager = new ViewManager(
-            this.jsonldElements,
-            this.jsonldAnalyzer,
-            this.languageManager
-        );
-        this.viewManager.init();
-
         // Complete Entity View
         this.completeEntityView = new CompleteEntityView(
             this.completeElements,
             this.languageManager
         );
         this.completeEntityView.init();
-
-        // Event listeners for view changes
-        window.addEventListener('view-changed', (e) => this.onViewChanged(e.detail.view));
     }
 
     attachEventListeners() {
         this.cancelBtn.addEventListener('click', () => this.cancel());
-    }
-
-    onViewChanged(view) {
-        if (view === 'jsonld' && this.rawJsonData) {
-            this.viewManager.displayJsonLdStructure(this.rawJsonData);
-        }
-
-        if (view === 'complete' && this.rawJsonData) {
-            this.completeEntityView.display(this.rawJsonData);
-        }
     }
 
     async analyze(url) {
@@ -128,13 +87,12 @@ export class UIController {
             const rawData = await response.json();
             console.log('[UI] Raw data received:', rawData);
             this.rawJsonData = rawData;
-            this.viewManager.setRawData(rawData);
 
             this.hideLoading();
             this.showResults();
 
-            // Display JSON-LD view by default
-            this.viewManager.displayJsonLdStructure(rawData);
+            // Display Complete Entity view
+            this.completeEntityView.display(rawData);
 
         } catch (error) {
             this.hideLoading();

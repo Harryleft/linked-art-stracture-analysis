@@ -83,86 +83,17 @@
                 <p id="error-message" class="error-message"></p>
             </div>
 
-            <!-- Results Section -->
+            <!-- Results Section - Complete Entity View Only -->
             <section id="results" class="results-section hidden">
                 <div class="results-header">
                     <h2 class="results-title" data-i18n="resultsTitle">Analysis Results</h2>
-                    <div class="results-meta">
-                        <div class="view-tabs">
-                            <button class="view-tab active" data-view="jsonld" data-i18n="viewJsonLd">JSON-LD Structure</button>
-                            <button class="view-tab" data-view="complete" data-i18n="viewComplete">Complete Entity</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- JSON-LD Structure View -->
-                <div id="view-jsonld" class="view-panel active">
-                    <div id="jsonld-container" class="jsonld-container">
-                        <!-- Entity Type Summary -->
-                        <div class="jsonld-summary">
-                            <div class="jsonld-summary-item">
-                                <span class="jsonld-summary-label" data-i18n="entityType">Entity Type:</span>
-                                <span id="jsonld-entity-type" class="jsonld-summary-value"></span>
-                            </div>
-                            <div class="jsonld-summary-item">
-                                <span class="jsonld-summary-label" data-i18n="properties">Properties:</span>
-                                <span id="jsonld-property-count" class="jsonld-summary-value"></span>
-                            </div>
-                            <div class="jsonld-summary-item">
-                                <span class="jsonld-summary-label" data-i18n="vocabularies">Vocabularies:</span>
-                                <span id="jsonld-vocab-sources" class="jsonld-summary-value"></span>
-                            </div>
-                        </div>
-
-                        <!-- Vocabulary References -->
-                        <div id="jsonld-vocab-section" class="jsonld-section">
-                            <h3 class="jsonld-section-title" data-i18n="vocabReferences">Vocabulary References</h3>
-                            <div id="jsonld-vocab-list" class="jsonld-vocab-list"></div>
-                        </div>
-
-                        <!-- Property Tree -->
-                        <div class="jsonld-section">
-                            <h3 class="jsonld-section-title" data-i18n="propertyTree">Property Structure</h3>
-                            <div id="jsonld-tree" class="jsonld-tree"></div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Complete Entity View -->
-                <div id="view-complete" class="view-panel hidden">
+                <div id="view-complete" class="view-panel active">
                     <div id="complete-container" class="complete-container">
-                        <!-- Summary Dashboard -->
+                        <!-- Search -->
                         <div class="complete-dashboard">
-                            <div class="complete-header">
-                                <div class="complete-title">
-                                    <h2 class="complete-entity-title" id="complete-entity-title"></h2>
-                                    <p class="complete-entity-id" id="complete-entity-id"></p>
-                                </div>
-                            </div>
-
-                            <div class="complete-stats">
-                                <div class="stat-card">
-                                    <span class="stat-label" data-i18n="properties">Properties</span>
-                                    <span class="stat-value" id="complete-stat-properties">0</span>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-label" data-i18n="nestedEntities">Nested Entities</span>
-                                    <span class="stat-value" id="complete-stat-nested">0</span>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-label" data-i18n="arrays">Arrays</span>
-                                    <span class="stat-value" id="complete-stat-arrays">0</span>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-label" data-i18n="references">References</span>
-                                    <span class="stat-value" id="complete-stat-refs">0</span>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-label" data-i18n="maxDepth">Max Depth</span>
-                                    <span class="stat-value" id="complete-stat-depth">0</span>
-                                </div>
-                            </div>
-
                             <div class="complete-search">
                                 <input type="text" id="complete-search" data-i18n-placeholder="searchProperties" placeholder="Search properties..." class="search-input">
                             </div>
