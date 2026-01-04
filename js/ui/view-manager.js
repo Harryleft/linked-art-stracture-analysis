@@ -207,7 +207,7 @@ export class ViewManager {
                 html += `<span class="jsonld-tree-label"> "${this.escapeHtml(child.label)}"</span>`;
             }
 
-            if (child.value && !child.id) {
+            if (child.value && !child.id && !child.isContext) {
                 html += `<span class="jsonld-tree-value"> = "${this.escapeHtml(child.value)}"</span>`;
             }
 
