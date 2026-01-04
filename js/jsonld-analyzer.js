@@ -519,10 +519,27 @@ export class JsonLdAnalyzer {
                 path: childPath
             };
 
-            // Skip @context for cleaner display
+            // Handle @context - show actual content
             if (key === '@context') {
-                child.value = '[JSON-LD Context]';
                 child.isContext = true;
+                if (typeof value === 'string') {
+                    // External context URL
+                    child.value = value;
+                    child.contextType = 'external';
+                } else if (typeof value === 'object') {
+                    // Embedded context with mappings
+                    child.contextType = 'embedded';
+                    child.contextMappings = [];
+                    // Store all context mappings for display
+                    for (const [term, mapping] of Object.entries(value)) {
+                        child.contextMappings.push({
+                            term: term,
+                            mapping: typeof mapping === 'string' ? mapping : JSON.stringify(mapping)
+                        });
+                    }
+                } else {
+                    child.value = String(value);
+                }
                 node.children.push(child);
                 continue;
             }

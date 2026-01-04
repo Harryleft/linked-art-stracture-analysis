@@ -220,7 +220,24 @@ export class ViewManager {
             }
 
             if (child.isContext) {
-                html += `<span class="jsonld-tree-context"> ${child.value}</span>`;
+                if (child.contextType === 'external') {
+                    // External context URL
+                    html += `<span class="jsonld-tree-context"> = <a href="${this.escapeHtml(child.value)}" target="_blank" rel="noopener">"${this.escapeHtml(child.value)}"</a></span>`;
+                } else if (child.contextType === 'embedded' && child.contextMappings) {
+                    // Embedded context with mappings - show as expandable list
+                    html += `<span class="jsonld-tree-toggle">▶</span>`;
+                    html += `<span class="jsonld-tree-context"> [${child.contextMappings.length} terms]</span>`;
+                    html += `<div class="jsonld-tree-children collapsed">`;
+                    child.contextMappings.forEach(mapping => {
+                        html += `<div class="jsonld-tree-node">`;
+                        html += `<span class="jsonld-tree-key">${mapping.term}</span>`;
+                        html += `<span class="jsonld-tree-value"> → ${this.escapeHtml(mapping.mapping)}</span>`;
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<span class="jsonld-tree-context"> = ${this.escapeHtml(String(child.value))}</span>`;
+                }
             }
 
             if (child.children && child.children.length > 0) {
