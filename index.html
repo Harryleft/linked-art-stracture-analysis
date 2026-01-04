@@ -210,31 +210,31 @@
                             <div class="breadcrumb" id="detail-breadcrumb"></div>
                         </div>
                     </div>
-
-                    <!-- 方案B: Modal -->
-                    <div id="detail-modal" class="detail-modal">
-                        <div class="modal-overlay"></div>
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title" id="modal-title">Property Details</h3>
-                                <button id="close-modal" class="close-btn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="modal-body" id="modal-body">
-                                <!-- Detail content will be rendered here -->
-                            </div>
-                            <div class="modal-footer">
-                                <div class="breadcrumb" id="modal-breadcrumb"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
         </main>
+
+        <!-- 方案B: Modal (moved outside main for proper fixed positioning) -->
+        <div id="detail-modal" class="detail-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modal-title">Property Details</h3>
+                    <button id="close-modal" class="close-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Detail content will be rendered here -->
+                </div>
+                <div class="modal-footer">
+                    <div class="breadcrumb" id="modal-breadcrumb"></div>
+                </div>
+            </div>
+        </div>
 
         <!-- Footer -->
         <footer class="footer">

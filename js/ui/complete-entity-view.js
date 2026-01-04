@@ -10,7 +10,7 @@ export class CompleteEntityView {
         this.t = languageManager.t.bind(languageManager);
         this.rawJsonData = null;
         this.parsedEntity = null;
-        this.currentUIMethod = 'sidebar';
+        this.currentUIMethod = 'modal';  // 默认使用模态弹窗
     }
 
     init() {
@@ -50,6 +50,7 @@ export class CompleteEntityView {
 
     async display(rawData) {
         this.showLoading();
+        this.rawJsonData = rawData;  // Save for navigation
 
         try {
             const resolveRefs = this.elements.completeResolve.checked;
@@ -223,10 +224,23 @@ export class CompleteEntityView {
         return html;
     }
 
-    buildPropertyNode(key, value, depth) {
-        let html = `<div class="tree-node">`;
+    buildPropertyNode(key, value, depth, parentPath = '') {
+        // Build current path for this node
+        const currentPath = parentPath ? `${parentPath}.${key}` : key;
+        const hasChildren = value.hasChildren ||
+            (value.type === 'entity' && value.properties && Object.keys(value.properties).length > 0) ||
+            (value.type === 'array' && value.items && value.items.length > 0);
+
+        let html = `<div class="tree-node" data-path="${this.escapeHtml(currentPath)}">`;
         html += `<div class="tree-header">`;
-        html += `<span class="tree-key">${this.escapeHtml(key)}</span>`;
+
+        // Add click handler for nodes with children
+        if (hasChildren && (value.type === 'entity' || value.type === 'array')) {
+            html += `<span class="tree-toggle">▶</span>`;
+            html += `<span class="tree-key tree-node-clickable" data-node-path="${this.escapeHtml(currentPath)}">${this.escapeHtml(key)}</span>`;
+        } else {
+            html += `<span class="tree-key">${this.escapeHtml(key)}</span>`;
+        }
 
         if (value.type === 'entity') {
             if (value.label) html += `<span class="tree-value">"${this.escapeHtml(value.label)}"</span>`;
@@ -241,17 +255,25 @@ export class CompleteEntityView {
 
         html += `</div>`;
 
-        if (value.hasChildren) {
+        if (hasChildren) {
             html += `<div class="tree-children">`;
             if (value.type === 'entity') {
                 for (const [k, v] of Object.entries(value.properties || {})) {
-                    html += this.buildPropertyNode(k, v, depth + 1);
+                    html += this.buildPropertyNode(k, v, depth + 1, currentPath);
                 }
             } else if (value.type === 'array') {
                 value.items?.forEach((item, index) => {
-                    html += `<div class="tree-node">`;
+                    const itemPath = `${currentPath}[${index}]`;
+                    html += `<div class="tree-node" data-path="${this.escapeHtml(itemPath)}">`;
                     html += `<div class="tree-header">`;
-                    html += `<span class="tree-key">[${index}]</span>`;
+
+                    if (item.type === 'entity' || (item.properties && Object.keys(item.properties).length > 0)) {
+                        html += `<span class="tree-toggle">▶</span>`;
+                        html += `<span class="tree-key tree-node-clickable" data-node-path="${this.escapeHtml(itemPath)}">[${index}]</span>`;
+                    } else {
+                        html += `<span class="tree-key">[${index}]</span>`;
+                    }
+
                     if (item.type === 'entity') {
                         html += `<span class="tree-type">${item.entityType}</span>`;
                         if (item.label) html += `<span class="tree-value">"${this.escapeHtml(item.label)}"</span>`;
@@ -260,7 +282,7 @@ export class CompleteEntityView {
                     if (item.type === 'entity') {
                         html += `<div class="tree-children">`;
                         for (const [k, v] of Object.entries(item.properties || {})) {
-                            html += this.buildPropertyNode(k, v, depth + 1);
+                            html += this.buildPropertyNode(k, v, depth + 1, itemPath);
                         }
                         html += `</div>`;
                     }
@@ -334,6 +356,7 @@ export class CompleteEntityView {
     }
 
     attachTreeToggleListeners() {
+        // Tree toggle for expand/collapse
         document.querySelectorAll('.tree-toggle').forEach(toggle => {
             toggle.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -341,6 +364,17 @@ export class CompleteEntityView {
                 const children = toggle.closest('.tree-node').querySelector('.tree-children');
                 if (children) {
                     children.classList.toggle('expanded');
+                }
+            });
+        });
+
+        // Node click for navigation
+        document.querySelectorAll('.tree-node-clickable').forEach(node => {
+            node.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const path = node.dataset.nodePath;
+                if (path && this.parsedEntity) {
+                    this.showPropertyDetail(path, this.parsedEntity);
                 }
             });
         });

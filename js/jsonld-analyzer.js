@@ -245,7 +245,7 @@ export class JsonLdAnalyzer {
         // Handle nested objects
         if (value && typeof value === 'object' && !Array.isArray(value)) {
             const nested = this.extractProperties(value, depth + 1, maxDepth);
-            propInfo.nested = nested.slice(0, 5);
+            propInfo.nested = nested; // Complete display - no limit
             propInfo.nestedCount = nested.length;
         }
         // Handle arrays
@@ -255,7 +255,7 @@ export class JsonLdAnalyzer {
             // Show structure of first item if it's an object
             if (typeof value[0] === 'object' && value[0] !== null) {
                 const nested = this.extractProperties(value[0], depth + 1, maxDepth);
-                propInfo.nestedSample = nested.slice(0, 3);
+                propInfo.nestedSample = nested; // Complete display - no limit
             }
 
             // Check if all items are same type
@@ -333,7 +333,7 @@ export class JsonLdAnalyzer {
                 source,
                 name: this.getVocabularyName(source),
                 count: refs.length,
-                examples: refs.slice(0, 8) // Show up to 8 examples
+                examples: refs // Show all examples - no limit
             }))
             .filter(v => v.count > 0)
             .sort((a, b) => b.count - a.count);
@@ -357,8 +357,8 @@ export class JsonLdAnalyzer {
         for (const [key, value] of Object.entries(obj)) {
             const currentPath = path ? `${path}.${key}` : key;
 
-            // Skip JSON-LD keywords except @context
-            if (key.startsWith('@') && key !== '@context') continue;
+            // No longer skip JSON-LD keywords - user requested complete display
+            // Previously: if (key.startsWith('@') && key !== '@context') continue;
 
             // Check for vocabulary URLs in id fields
             if (key === 'id' && typeof value === 'string') {
@@ -465,14 +465,14 @@ export class JsonLdAnalyzer {
     /**
      * Build a structure tree for visualization
      */
-    buildStructureTree(data, maxDepth = 3) {
+    buildStructureTree(data, maxDepth = Infinity) {
         return this.buildTreeNode(data, null, '', 0, maxDepth);
     }
 
     /**
      * Build a single tree node
      */
-    buildTreeNode(obj, parentKey, path = '', depth = 0, maxDepth = 3) {
+    buildTreeNode(obj, parentKey, path = '', depth = 0, maxDepth = Infinity) {
         if (depth > maxDepth || !obj || typeof obj !== 'object') {
             return null;
         }
@@ -506,13 +506,10 @@ export class JsonLdAnalyzer {
             node.idType = this.identifyVocabulary(obj.id);
         }
 
-        // Process children
+        // Process children - no limit on number of children for complete display
         const childKeys = Object.keys(obj);
-        let childCount = 0;
-        const maxChildren = 20; // Increased limit
 
         for (const key of childKeys) {
-            if (childCount >= maxChildren) break;
 
             const value = obj[key];
             const childPath = path ? `${path}.${key}` : key;
@@ -527,7 +524,6 @@ export class JsonLdAnalyzer {
                 child.value = '[JSON-LD Context]';
                 child.isContext = true;
                 node.children.push(child);
-                childCount++;
                 continue;
             }
 
@@ -563,7 +559,7 @@ export class JsonLdAnalyzer {
                 if (value.length > 0 && typeof value[0] === 'object' && value[0] !== null) {
                     const nestedNode = this.buildTreeNode(value[0], `${key}[0]`, childPath + '[0]', depth + 1, maxDepth);
                     if (nestedNode && nestedNode.children) {
-                        child.children = nestedNode.children.slice(0, 4);
+                        child.children = nestedNode.children; // Complete display - no limit
                     }
                 }
             }
@@ -571,17 +567,11 @@ export class JsonLdAnalyzer {
             else if (value && typeof value === 'object' && value !== null && !Array.isArray(value)) {
                 const nestedNode = this.buildTreeNode(value, key, childPath, depth + 1, maxDepth);
                 if (nestedNode && nestedNode.children) {
-                    child.children = nestedNode.children.slice(0, 5);
+                    child.children = nestedNode.children; // Complete display - no limit
                 }
             }
 
             node.children.push(child);
-            childCount++;
-        }
-
-        if (childKeys.length > maxChildren) {
-            node.hasMore = true;
-            node.remainingCount = childKeys.length - maxChildren;
         }
 
         return node;
