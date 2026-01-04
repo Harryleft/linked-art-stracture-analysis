@@ -2,20 +2,15 @@
  * Main UI Controller - Coordinates all UI modules
  */
 
-import { LinkedArtAnalyzer } from '../latool-core.js';
 import { JsonLdAnalyzer } from '../jsonld-analyzer.js';
 import { LanguageManager } from './language-manager.js';
 import { InputHandler } from './input-handler.js';
-import { ResultsRenderer } from './results-renderer.js';
 import { ViewManager } from './view-manager.js';
-import { ExportHandler } from './export-handler.js';
 import { CompleteEntityView } from './complete-entity-view.js';
 
 export class UIController {
     constructor() {
-        this.analyzer = new LinkedArtAnalyzer();
         this.jsonldAnalyzer = new JsonLdAnalyzer();
-        this.currentResult = null;
         this.currentUrl = '';
         this.rawJsonData = null;
 
@@ -31,17 +26,11 @@ export class UIController {
         this.analyzeBtn = document.getElementById('analyze-btn');
         this.cancelBtn = document.getElementById('cancel-btn');
 
-        // Option checkboxes
-        this.conciseMode = document.getElementById('concise-mode');
-        this.foundOnly = document.getElementById('found-only');
-        this.showLogs = document.getElementById('show-logs');
-
         // Display elements
         this.loading = document.getElementById('loading');
         this.error = document.getElementById('error');
         this.errorMessage = document.getElementById('error-message');
         this.results = document.getElementById('results');
-        this.resultsContainer = document.getElementById('results-container');
 
         // JSON-LD view elements
         const jsonldElements = {
@@ -80,14 +69,8 @@ export class UIController {
             loading: this.loading
         };
 
-        // Export elements
-        const exportElements = {
-            exportBtn: document.getElementById('export-btn')
-        };
-
         this.jsonldElements = jsonldElements;
         this.completeElements = completeElements;
-        this.exportElements = exportElements;
     }
 
     initModules() {
@@ -104,12 +87,6 @@ export class UIController {
         this.inputHandler.init();
         this.inputHandler.onAnalyze((url) => this.analyze(url));
 
-        // Results Renderer
-        this.resultsRenderer = new ResultsRenderer(
-            this.resultsContainer,
-            this.languageManager
-        );
-
         // View Manager
         this.viewManager = new ViewManager(
             this.jsonldElements,
@@ -117,13 +94,6 @@ export class UIController {
             this.languageManager
         );
         this.viewManager.init();
-
-        // Export Handler
-        this.exportHandler = new ExportHandler(
-            this.exportElements,
-            this.languageManager
-        );
-        this.exportHandler.init(this.analyzer);
 
         // Complete Entity View
         this.completeEntityView = new CompleteEntityView(
@@ -154,50 +124,27 @@ export class UIController {
         this.showLoading();
         this.hideResults();
         this.hideError();
-        this.exportHandler.clear();
-
-        const options = {
-            conciseMode: this.conciseMode.checked,
-            foundOnly: this.foundOnly.checked,
-            logMode: this.showLogs.checked ? 'all' : 'errors'
-        };
 
         try {
             console.log('[UI] Fetching data from:', url);
 
             // Fetch raw JSON data
-            const rawData = await this.analyzer.fetchJson(url);
-            if (!rawData) {
-                throw new Error('Failed to fetch data');
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
+            const rawData = await response.json();
             console.log('[UI] Raw data received:', rawData);
             this.rawJsonData = rawData;
             this.viewManager.setRawData(rawData);
 
-            // Run standard analysis
-            console.log('[UI] Running standard analysis...');
-            const result = await this.analyzer.analyze(url, options);
-
             this.hideLoading();
+            this.showResults();
 
-            if (result.success) {
-                this.currentResult = result;
-                this.currentUrl = url;
+            // Display JSON-LD view by default
+            this.viewManager.displayJsonLdStructure(rawData);
 
-                // Display standard results
-                const formatted = this.analyzer.formatResults(result);
-                this.resultsRenderer.render(formatted);
-                this.showResults();
-
-                // Setup export
-                this.exportHandler.setResult(result, url);
-
-                // Switch to standard view
-                this.viewManager.switchView('standard');
-            } else {
-                this.showError(result.error);
-            }
         } catch (error) {
             this.hideLoading();
             console.error('[UI] Error:', error);
@@ -206,7 +153,6 @@ export class UIController {
     }
 
     cancel() {
-        this.analyzer.cancel();
         this.hideLoading();
     }
 
@@ -216,7 +162,6 @@ export class UIController {
 
     hideResults() {
         this.results.classList.add('hidden');
-        this.resultsRenderer.clear();
     }
 
     showError(message) {

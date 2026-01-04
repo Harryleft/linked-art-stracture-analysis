@@ -54,34 +54,6 @@
                     </div>
                 </div>
 
-                <!-- Options -->
-                <div class="options-group">
-                    <div class="options-title">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                        </svg>
-                        <span data-i18n="optionsTitle">Display Options</span>
-                    </div>
-                    <div class="options-grid">
-                        <label class="option-checkbox">
-                            <input type="checkbox" id="concise-mode" class="checkbox-input">
-                            <span class="checkbox-custom"></span>
-                            <span class="checkbox-label" data-i18n="conciseMode">Concise mode</span>
-                        </label>
-                        <label class="option-checkbox">
-                            <input type="checkbox" id="found-only" class="checkbox-input">
-                            <span class="checkbox-custom"></span>
-                            <span class="checkbox-label" data-i18n="foundOnly">Found entries only</span>
-                        </label>
-                        <label class="option-checkbox">
-                            <input type="checkbox" id="show-logs" class="checkbox-input">
-                            <span class="checkbox-custom"></span>
-                            <span class="checkbox-label" data-i18n="showLogs">Show all logs</span>
-                        </label>
-                    </div>
-                </div>
-
                 <!-- Action Buttons -->
                 <div class="actions">
                     <button id="analyze-btn" class="btn btn-primary" disabled>
@@ -89,14 +61,6 @@
                         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
-                    </button>
-                    <button id="export-btn" class="btn btn-secondary" disabled>
-                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        <span class="btn-text" data-i18n="exportYaml">Export YAML</span>
                     </button>
                 </div>
             </section>
@@ -125,20 +89,14 @@
                     <h2 class="results-title" data-i18n="resultsTitle">Analysis Results</h2>
                     <div class="results-meta">
                         <div class="view-tabs">
-                            <button class="view-tab active" data-view="standard" data-i18n="viewStandard">Standard</button>
-                            <button class="view-tab" data-view="jsonld" data-i18n="viewJsonLd">JSON-LD Structure</button>
+                            <button class="view-tab active" data-view="jsonld" data-i18n="viewJsonLd">JSON-LD Structure</button>
                             <button class="view-tab" data-view="complete" data-i18n="viewComplete">Complete Entity</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Standard View -->
-                <div id="view-standard" class="view-panel active">
-                    <div id="results-container" class="results-container"></div>
-                </div>
-
                 <!-- JSON-LD Structure View -->
-                <div id="view-jsonld" class="view-panel hidden">
+                <div id="view-jsonld" class="view-panel active">
                     <div id="jsonld-container" class="jsonld-container">
                         <!-- Entity Type Summary -->
                         <div class="jsonld-summary">
