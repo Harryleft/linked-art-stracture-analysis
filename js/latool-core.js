@@ -51,6 +51,10 @@ export class LinkedArtAnalyzer {
      * Convert numeric IDs to full URIs
      */
     convertToFullUri(id) {
+        // Check if id is a valid string
+        if (!id || typeof id !== 'string') {
+            return id;
+        }
         const patterns = [
             { prefix: 'aat:', baseUri: 'http://vocab.getty.edu/aat/' },
             { prefix: 'tgn:', baseUri: 'http://vocab.getty.edu/tgn/' },

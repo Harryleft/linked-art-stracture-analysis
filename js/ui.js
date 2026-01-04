@@ -4,17 +4,22 @@
  */
 
 import { LinkedArtAnalyzer } from './latool-core.js';
+import { JsonLdAnalyzer } from './jsonld-analyzer.js';
 import { translations, fieldLabelMapping } from './translations.js';
 
 class UIController {
     constructor() {
         this.analyzer = new LinkedArtAnalyzer();
+        this.jsonldAnalyzer = new JsonLdAnalyzer();
         this.currentResult = null;
         this.currentUrl = '';
         this.currentLang = this.detectLanguage();
+        this.currentView = 'standard';
+        this.rawJsonData = null;
 
         this.initElements();
         this.initLanguage();
+        this.initViewTabs();
         this.attachEventListeners();
     }
 
@@ -39,8 +44,45 @@ class UIController {
         this.resultsContainer = document.getElementById('results-container');
         this.resultCount = document.getElementById('result-count');
 
+        // JSON-LD view elements
+        this.jsonldEntityType = document.getElementById('jsonld-entity-type');
+        this.jsonldPropertyCount = document.getElementById('jsonld-property-count');
+        this.jsonldVocabSources = document.getElementById('jsonld-vocab-sources');
+        this.jsonldVocabList = document.getElementById('jsonld-vocab-list');
+        this.jsonldTree = document.getElementById('jsonld-tree');
+
         // Language buttons
         this.langButtons = document.querySelectorAll('.lang-btn');
+    }
+
+    initViewTabs() {
+        const viewTabs = document.querySelectorAll('.view-tab');
+        viewTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const view = tab.dataset.view;
+                this.switchView(view);
+            });
+        });
+    }
+
+    switchView(view) {
+        this.currentView = view;
+
+        // Update tabs
+        document.querySelectorAll('.view-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.view === view);
+        });
+
+        // Update panels
+        document.querySelectorAll('.view-panel').forEach(panel => {
+            panel.classList.remove('active');
+        });
+        document.getElementById(`view-${view}`).classList.add('active');
+
+        // If switching to JSON-LD view and we have raw data, display it
+        if (view === 'jsonld' && this.rawJsonData) {
+            this.displayJsonLdStructure(this.rawJsonData);
+        }
     }
 
     initLanguage() {
@@ -196,6 +238,14 @@ class UIController {
         };
 
         try {
+            // Fetch raw JSON data for JSON-LD analysis
+            const rawData = await this.analyzer.fetchJson(url);
+            if (!rawData) {
+                throw new Error('Failed to fetch data');
+            }
+            this.rawJsonData = rawData;
+
+            // Run the standard analysis
             const result = await this.analyzer.analyze(url, options);
 
             this.hideLoading();
@@ -221,8 +271,9 @@ class UIController {
     displayResults(analysisResult) {
         const formatted = this.analyzer.formatResults(analysisResult);
 
-        // Update result count with translation
-        this.resultCount.textContent = `${formatted.length} ${this.t('fieldsFound')}`;
+        // Update result count with translation (hide count in standard view)
+        this.resultCount.textContent = '';
+
         this.resultsContainer.innerHTML = '';
 
         formatted.forEach((field, index) => {
@@ -231,6 +282,190 @@ class UIController {
         });
 
         this.showResults();
+    }
+
+    displayJsonLdStructure(data) {
+        const analysis = this.jsonldAnalyzer.analyze(data, this.currentUrl);
+
+        // Update summary with label if available
+        const typeText = analysis.type.join(', ') || 'Unknown';
+        const labelText = analysis.label ? `"${analysis.label}"` : '';
+        this.jsonldEntityType.textContent = labelText ? `${typeText} (${labelText})` : typeText;
+
+        this.jsonldPropertyCount.textContent = analysis.properties.length;
+        this.jsonldVocabSources.textContent = analysis.vocabularies.map(v => v.name).join(', ') || 'None';
+
+        // Display ID if available
+        if (analysis.id) {
+            this.jsonldEntityType.innerHTML += `<br><small style="color:var(--color-text-muted)">${this.escapeHtml(analysis.id)}</small>`;
+        }
+
+        // Display vocabulary references
+        this.displayVocabularies(analysis.vocabularies);
+
+        // Display property tree
+        this.displayPropertyTree(analysis.structure);
+    }
+
+    displayVocabularies(vocabularies) {
+        this.jsonldVocabList.innerHTML = '';
+
+        if (vocabularies.length === 0) {
+            this.jsonldVocabList.innerHTML = `<div class="result-value not-found">${this.t('notFound')}</div>`;
+            return;
+        }
+
+        vocabularies.forEach(vocab => {
+            const item = document.createElement('div');
+            item.className = 'jsonld-vocab-item';
+
+            const header = document.createElement('div');
+            header.className = 'jsonld-vocab-header';
+            header.innerHTML = `
+                <span class="jsonld-vocab-name">${vocab.name}</span>
+                <span class="jsonld-vocab-count">${vocab.count} references</span>
+            `;
+
+            const examples = document.createElement('div');
+            examples.className = 'jsonld-vocab-examples';
+
+            vocab.examples.forEach(example => {
+                const exampleDiv = document.createElement('div');
+                exampleDiv.className = 'jsonld-vocab-example';
+
+                let labelHtml = '';
+                if (example.label) {
+                    labelHtml = `<div class="jsonld-vocab-label">🏷️ ${this.escapeHtml(example.label)}</div>`;
+                }
+
+                exampleDiv.innerHTML = `
+                    <div class="jsonld-vocab-path">${example.path} <span style="color:var(--color-text-light)">(${example.context || 'Property'})</span></div>
+                    ${labelHtml}
+                    <div class="jsonld-vocab-uri"><a href="${example.uri}" target="_blank" rel="noopener">${example.uri}</a></div>
+                `;
+                examples.appendChild(exampleDiv);
+            });
+
+            item.appendChild(header);
+            item.appendChild(examples);
+
+            header.addEventListener('click', () => {
+                item.classList.toggle('expanded');
+            });
+
+            this.jsonldVocabList.appendChild(item);
+        });
+    }
+
+    displayPropertyTree(structure) {
+        this.jsonldTree.innerHTML = '';
+        const treeHtml = this.buildTreeHtml(structure, 0);
+        this.jsonldTree.innerHTML = treeHtml;
+    }
+
+    buildTreeHtml(node, depth) {
+        if (!node || !node.children) return '';
+
+        let html = '';
+
+        node.children.forEach(child => {
+            const hasVocab = child.idType || (child.value && this.jsonldAnalyzer.identifyVocabulary(child.value));
+            const vocabClass = hasVocab ? ' jsonld-tree-vocab' : '';
+
+            html += `<div class="jsonld-tree-node ${depth === 0 ? 'root' : ''}">`;
+
+            // Key with optional type label
+            html += `<span class="jsonld-tree-key${vocabClass}">${child.key}</span>`;
+
+            // Show array length
+            if (child.isArray) {
+                html += `<span class="jsonld-tree-type">[${child.length}]</span>`;
+            }
+            // Show primitive type
+            else if (child.type && child.type !== 'object' && child.type !== 'array') {
+                html += `<span class="jsonld-tree-type">: ${child.type}</span>`;
+            }
+
+            // Show object type if available
+            if (child.objectType) {
+                html += `<span class="jsonld-tree-type"> (${child.objectType})</span>`;
+            }
+
+            // Show label if available
+            if (child.label) {
+                html += `<span class="jsonld-tree-label"> "${this.escapeHtml(child.label)}"</span>`;
+            }
+
+            // Show primitive value
+            if (child.value && !child.id) {
+                html += `<span class="jsonld-tree-value"> = "${this.escapeHtml(child.value)}"</span>`;
+            }
+
+            // Show ID with link
+            if (child.id) {
+                const vocab = child.idType || this.jsonldAnalyzer.identifyVocabulary(child.id);
+                html += `<span class="jsonld-tree-value"> = <a href="${child.id}" target="_blank" rel="noopener">"${this.escapeHtml(child.id)}"</a></span>`;
+                if (vocab) {
+                    html += `<span class="jsonld-tree-vocab"> [${vocab.toUpperCase()}]</span>`;
+                }
+            }
+
+            // Show context marker
+            if (child.isContext) {
+                html += `<span class="jsonld-tree-context"> ${child.value}</span>`;
+            }
+
+            // Recursively render children
+            if (child.children && child.children.length > 0) {
+                html += `<div class="jsonld-tree-children">`;
+                child.children.forEach(grandchild => {
+                    html += this.buildTreeNodeHtml(grandchild, depth + 1);
+                });
+                html += `</div>`;
+            }
+
+            html += `</div>`;
+        });
+
+        return html;
+    }
+
+    buildTreeNodeHtml(node, depth) {
+        let html = `<div class="jsonld-tree-node">`;
+
+        const hasVocab = node.idType || (node.value && this.jsonldAnalyzer.identifyVocabulary(node.value));
+        const vocabClass = hasVocab ? ' jsonld-tree-vocab' : '';
+
+        html += `<span class="jsonld-tree-key${vocabClass}">${node.key}</span>`;
+
+        if (node.isArray) {
+            html += `<span class="jsonld-tree-type">[${node.length}]</span>`;
+        } else if (node.type && node.type !== 'object' && node.type !== 'array') {
+            html += `<span class="jsonld-tree-type">: ${node.type}</span>`;
+        }
+
+        if (node.objectType) {
+            html += `<span class="jsonld-tree-type"> (${node.objectType})</span>`;
+        }
+
+        if (node.label) {
+            html += `<span class="jsonld-tree-label"> "${this.escapeHtml(node.label)}"</span>`;
+        }
+
+        if (node.value && !node.id) {
+            html += `<span class="jsonld-tree-value"> = "${this.escapeHtml(String(node.value))}"</span>`;
+        }
+
+        if (node.id) {
+            html += `<span class="jsonld-tree-value"> = <a href="${node.id}" target="_blank" rel="noopener">"${this.escapeHtml(node.id)}"</a></span>`;
+            if (node.idType) {
+                html += `<span class="jsonld-tree-vocab"> [${node.idType.toUpperCase()}]</span>`;
+            }
+        }
+
+        html += `</div>`;
+
+        return html;
     }
 
     createResultCard(field, index) {

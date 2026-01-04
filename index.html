@@ -124,10 +124,50 @@
                 <div class="results-header">
                     <h2 class="results-title" data-i18n="resultsTitle">Analysis Results</h2>
                     <div class="results-meta">
-                        <span id="result-count" class="result-count"></span>
+                        <div class="view-tabs">
+                            <button class="view-tab active" data-view="standard" data-i18n="viewStandard">Standard</button>
+                            <button class="view-tab" data-view="jsonld" data-i18n="viewJsonLd">JSON-LD Structure</button>
+                        </div>
                     </div>
                 </div>
-                <div id="results-container" class="results-container"></div>
+
+                <!-- Standard View -->
+                <div id="view-standard" class="view-panel active">
+                    <div id="results-container" class="results-container"></div>
+                </div>
+
+                <!-- JSON-LD Structure View -->
+                <div id="view-jsonld" class="view-panel hidden">
+                    <div id="jsonld-container" class="jsonld-container">
+                        <!-- Entity Type Summary -->
+                        <div class="jsonld-summary">
+                            <div class="jsonld-summary-item">
+                                <span class="jsonld-summary-label" data-i18n="entityType">Entity Type:</span>
+                                <span id="jsonld-entity-type" class="jsonld-summary-value"></span>
+                            </div>
+                            <div class="jsonld-summary-item">
+                                <span class="jsonld-summary-label" data-i18n="properties">Properties:</span>
+                                <span id="jsonld-property-count" class="jsonld-summary-value"></span>
+                            </div>
+                            <div class="jsonld-summary-item">
+                                <span class="jsonld-summary-label" data-i18n="vocabularies">Vocabularies:</span>
+                                <span id="jsonld-vocab-sources" class="jsonld-summary-value"></span>
+                            </div>
+                        </div>
+
+                        <!-- Vocabulary References -->
+                        <div id="jsonld-vocab-section" class="jsonld-section">
+                            <h3 class="jsonld-section-title" data-i18n="vocabReferences">Vocabulary References</h3>
+                            <div id="jsonld-vocab-list" class="jsonld-vocab-list"></div>
+                        </div>
+
+                        <!-- Property Tree -->
+                        <div class="jsonld-section">
+                            <h3 class="jsonld-section-title" data-i18n="propertyTree">Property Structure</h3>
+                            <div id="jsonld-tree" class="jsonld-tree"></div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
 

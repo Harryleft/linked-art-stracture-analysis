@@ -75,6 +75,15 @@ export const translations = {
         notFound: '未找到',
         multipleCreators: '发现多个创作者，请验证。',
 
+        // JSON-LD Structure View
+        viewStandard: '标准视图',
+        viewJsonLd: 'JSON-LD 结构',
+        entityType: '实体类型',
+        properties: '属性数量',
+        vocabularies: '词表来源',
+        vocabReferences: '词表引用',
+        propertyTree: '属性结构树',
+
         // Footer
         footerText: '用于分析文化遗产机构的 Linked Art 数据',
         linkedArtApi: 'Linked Art API',
@@ -150,6 +159,15 @@ export const translations = {
         // Common
         notFound: 'Not found',
         multipleCreators: 'Multiple creators found. Please verify.',
+
+        // JSON-LD Structure View
+        viewStandard: 'Standard',
+        viewJsonLd: 'JSON-LD Structure',
+        entityType: 'Entity Type',
+        properties: 'Properties',
+        vocabularies: 'Vocabularies',
+        vocabReferences: 'Vocabulary References',
+        propertyTree: 'Property Structure',
 
         // Footer
         footerText: 'Built for analyzing Linked Art data from cultural heritage institutions',
