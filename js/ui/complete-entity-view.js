@@ -10,18 +10,9 @@ export class CompleteEntityView {
         this.t = languageManager.t.bind(languageManager);
         this.rawJsonData = null;
         this.parsedEntity = null;
-        this.currentUIMethod = 'modal';  // 默认使用模态弹窗
     }
 
     init() {
-        // Method selector
-        const methodBtns = document.querySelectorAll('.method-btn');
-        methodBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.switchUIMethod(btn.dataset.method);
-            });
-        });
-
         // Re-analyze button
         this.elements.completeReanalyze.addEventListener('click', () => {
             if (this.rawJsonData) {
@@ -34,15 +25,13 @@ export class CompleteEntityView {
             this.filterPropertyGrid(this.elements.completeSearch.value);
         });
 
-        // Close buttons
-        this.elements.closeSidebarBtn.addEventListener('click', () => this.closeSidebar());
+        // Close modal button
         this.elements.closeModalBtn.addEventListener('click', () => this.closeModal());
         this.elements.detailModal.querySelector('.modal-overlay').addEventListener('click', () => this.closeModal());
 
-        // ESC key
+        // ESC key to close modal
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                this.closeSidebar();
                 this.closeModal();
             }
         });
@@ -154,18 +143,7 @@ export class CompleteEntityView {
         if (!property) return;
 
         const content = this.buildTreeContent(property, path);
-
-        switch (this.currentUIMethod) {
-            case 'sidebar':
-                this.showSidebar(path, content);
-                break;
-            case 'modal':
-                this.showModal(path, content);
-                break;
-            case 'inline':
-                this.showInline(path, content);
-                break;
-        }
+        this.showModal(path, content);
     }
 
     buildTreeContent(property, path) {
@@ -267,7 +245,7 @@ export class CompleteEntityView {
                     html += `<div class="tree-node" data-path="${this.escapeHtml(itemPath)}">`;
                     html += `<div class="tree-header">`;
 
-                    if (item.type === 'entity' || (item.properties && Object.keys(item.properties).length > 0)) {
+                    if (item.type === 'entity' || item.type === 'array' || (item.properties && Object.keys(item.properties).length > 0)) {
                         html += `<span class="tree-toggle">▶</span>`;
                         html += `<span class="tree-key tree-node-clickable" data-node-path="${this.escapeHtml(itemPath)}">[${index}]</span>`;
                     } else {
@@ -277,12 +255,43 @@ export class CompleteEntityView {
                     if (item.type === 'entity') {
                         html += `<span class="tree-type">${item.entityType}</span>`;
                         if (item.label) html += `<span class="tree-value">"${this.escapeHtml(item.label)}"</span>`;
+                    } else if (item.type === 'array') {
+                        html += `<span class="tree-type">array[${item.items?.length || 0}]</span>`;
                     }
                     html += `</div>`;
-                    if (item.type === 'entity') {
+                    if (item.type === 'entity' || item.type === 'array') {
                         html += `<div class="tree-children">`;
-                        for (const [k, v] of Object.entries(item.properties || {})) {
-                            html += this.buildPropertyNode(k, v, depth + 1, itemPath);
+                        if (item.type === 'entity') {
+                            for (const [k, v] of Object.entries(item.properties || {})) {
+                                html += this.buildPropertyNode(k, v, depth + 1, itemPath);
+                            }
+                        } else if (item.type === 'array') {
+                            item.items?.forEach((subItem, subIndex) => {
+                                const subItemPath = `${itemPath}[${subIndex}]`;
+                                html += `<div class="tree-node" data-path="${this.escapeHtml(subItemPath)}">`;
+                                html += `<div class="tree-header">`;
+                                if (subItem.type === 'entity' || subItem.type === 'array') {
+                                    html += `<span class="tree-toggle">▶</span>`;
+                                    html += `<span class="tree-key tree-node-clickable" data-node-path="${this.escapeHtml(subItemPath)}">[${subIndex}]</span>`;
+                                } else {
+                                    html += `<span class="tree-key">[${subIndex}]</span>`;
+                                }
+                                if (subItem.type === 'entity') {
+                                    html += `<span class="tree-type">${subItem.entityType}</span>`;
+                                    if (subItem.label) html += `<span class="tree-value">"${this.escapeHtml(subItem.label)}"</span>`;
+                                } else if (subItem.type === 'array') {
+                                    html += `<span class="tree-type">array[${subItem.items?.length || 0}]</span>`;
+                                }
+                                html += `</div>`;
+                                if (subItem.type === 'entity') {
+                                    html += `<div class="tree-children">`;
+                                    for (const [k, v] of Object.entries(subItem.properties || {})) {
+                                        html += this.buildPropertyNode(k, v, depth + 1, subItemPath);
+                                    }
+                                    html += `</div>`;
+                                }
+                                html += `</div>`;
+                            });
                         }
                         html += `</div>`;
                     }
@@ -296,28 +305,6 @@ export class CompleteEntityView {
         return html;
     }
 
-    switchUIMethod(method) {
-        this.currentUIMethod = method;
-        document.querySelectorAll('.method-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.method === method);
-        });
-        if (this.parsedEntity) {
-            this.renderPropertyGrid(this.parsedEntity);
-        }
-    }
-
-    showSidebar(path, content) {
-        this.elements.detailTitle.textContent = path;
-        this.elements.detailSidebarContent.innerHTML = content;
-        this.elements.detailBreadcrumb.innerHTML = this.buildBreadcrumb(path);
-        this.elements.detailSidebar.classList.add('open');
-        this.attachTreeToggleListeners();
-    }
-
-    closeSidebar() {
-        this.elements.detailSidebar.classList.remove('open');
-    }
-
     showModal(path, content) {
         this.elements.modalTitle.textContent = path;
         this.elements.modalBody.innerHTML = content;
@@ -328,21 +315,6 @@ export class CompleteEntityView {
 
     closeModal() {
         this.elements.detailModal.classList.remove('open');
-    }
-
-    showInline(path, content) {
-        let inlineDetail = document.getElementById('inline-detail');
-        if (!inlineDetail) {
-            inlineDetail = document.createElement('div');
-            inlineDetail.id = 'inline-detail';
-            inlineDetail.className = 'property-inline-detail';
-            this.elements.propertyGrid.parentNode.insertBefore(inlineDetail, this.elements.propertyGrid.nextSibling);
-        }
-
-        inlineDetail.innerHTML = `<div class="property-inline-content">${content}</div>`;
-        inlineDetail.classList.add('expanded');
-        this.attachTreeToggleListeners();
-        inlineDetail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     buildBreadcrumb(path) {

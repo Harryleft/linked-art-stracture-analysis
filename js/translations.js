@@ -79,6 +79,7 @@ export const translations = {
         viewStandard: '标准视图',
         viewJsonLd: 'JSON-LD 结构',
         viewComplete: '完整实体',
+        viewStory: '故事视图',
         entityType: '实体类型',
         properties: '属性数量',
         vocabularies: '词表来源',
@@ -92,6 +93,55 @@ export const translations = {
         resolveRefs: '解析引用',
         reanalyze: '重新分析',
         searchProperties: '搜索属性...',
+
+        // Story View / 故事视图
+        coreInfo: '📦 核心信息',
+        showMore: '展开更多',
+        showLess: '收起',
+        showTechnical: '查看技术细节',
+        hideTechnical: '隐藏技术细节',
+
+        // Story Card Questions / 故事卡片问题
+        storyWhat: '这是什么？',
+        storyWhatContext: '了解这个物品的基本身份',
+        storyWho: '谁创作的？',
+        storyWhoContext: '探索创作者的信息',
+        storyWhen: '什么时候制作的？',
+        storyWhenContext: '了解制作时期',
+        storyWhere: '现在在哪里？',
+        storyWhereContext: '查看收藏位置',
+        storyMaterial: '什么材料制作的？',
+        storyMaterialContext: '了解使用的材料',
+        storySize: '有多大？',
+        storySizeContext: '查看尺寸信息',
+        storyImage: '有什么图像？',
+        storyImageContext: '查看相关图像',
+        storyType: '这是什么类型的物品？',
+        storyTypeContext: '了解物品分类',
+
+        // Story Card Answers / 故事卡片答案模板
+        storyObject: '这是一件<span class="story-card-value">{type}</span>。',
+        storyObjectNamed: '这是一件<span class="story-card-value">{type}</span>，名称是"<span class="story-card-value">{name}</span>"。',
+        storyCreator: '由<span class="story-card-value">{creator}</span>创作。',
+        storyCreators: '由<span class="story-card-value">{creators}</span>共同创作。',
+        storyCreatorUnknown: '创作者未知或佚名。',
+        storyTimespan: '制作于<span class="story-card-value">{timespan}</span>。',
+        storyTimespanRange: '制作于<span class="story-card-value">{begin}</span>至<span class="story-card-value">{end}</span>期间。',
+        storyClassification: '它属于<span class="story-card-value">{classification}</span>类别。',
+        storyMaterial: '使用<span class="story-card-value">{material}</span>制作。',
+        storyMaterials: '使用多种材料制作，包括<span class="story-card-value">{materials}</span>等。',
+        storyLocation: '现收藏于<span class="story-card-value">{location}</span>。',
+        storyDimension: '尺寸为<span class="story-card-value">{dimension}</span>。',
+        storyImage: '共有<span class="story-card-value">{count}</span>张图像。',
+
+        // Story Card Actions / 故事卡片操作
+        viewDetails: '查看详情',
+        viewJsonLd: '查看 JSON-LD 数据',
+
+        // Empty States / 空状态
+        noCoreInfo: '没有找到核心信息',
+        noSecondaryInfo: '没有找到详细信息',
+        noTechnicalInfo: '没有找到技术信息',
 
         // Footer
         footerText: '用于分析文化遗产机构的 Linked Art 数据',
@@ -173,6 +223,7 @@ export const translations = {
         viewStandard: 'Standard',
         viewJsonLd: 'JSON-LD Structure',
         viewComplete: 'Complete Entity',
+        viewStory: 'Story View',
         entityType: 'Entity Type',
         properties: 'Properties',
         vocabularies: 'Vocabularies',
@@ -186,6 +237,55 @@ export const translations = {
         resolveRefs: 'Resolve refs',
         reanalyze: 'Re-analyze',
         searchProperties: 'Search properties...',
+
+        // Story View
+        coreInfo: '📦 Core Information',
+        showMore: 'Show More',
+        showLess: 'Show Less',
+        showTechnical: 'View Technical Details',
+        hideTechnical: 'Hide Technical Details',
+
+        // Story Card Questions
+        storyWhat: 'What is this?',
+        storyWhatContext: 'Learn about this object',
+        storyWho: 'Who created it?',
+        storyWhoContext: 'Explore the creator',
+        storyWhen: 'When was it made?',
+        storyWhenContext: 'Learn about the time period',
+        storyWhere: 'Where is it now?',
+        storyWhereContext: 'View current location',
+        storyMaterial: 'What materials?',
+        storyMaterialContext: 'Learn about the materials used',
+        storySize: 'How big is it?',
+        storySizeContext: 'View dimensions',
+        storyImage: 'What images exist?',
+        storyImageContext: 'View related images',
+        storyType: 'What type of object?',
+        storyTypeContext: 'Learn about the classification',
+
+        // Story Card Answer Templates
+        storyObject: 'This is a <span class="story-card-value">{type}</span>.',
+        storyObjectNamed: 'This is a <span class="story-card-value">{type}</span> named "<span class="story-card-value">{name}</span>".',
+        storyCreator: 'Created by <span class="story-card-value">{creator}</span>.',
+        storyCreators: 'Created by <span class="story-card-value">{creators}</span>.',
+        storyCreatorUnknown: 'Creator unknown or anonymous.',
+        storyTimespan: 'Made in <span class="story-card-value">{timespan}</span>.',
+        storyTimespanRange: 'Made between <span class="story-card-value">{begin}</span> and <span class="story-card-value">{end}</span>.',
+        storyClassification: 'It belongs to the <span class="story-card-value">{classification}</span> category.',
+        storyMaterial: 'Made of <span class="story-card-value">{material}</span>.',
+        storyMaterials: 'Made of multiple materials including <span class="story-card-value">{materials}</span>.',
+        storyLocation: 'Currently held at <span class="story-card-value">{location}</span>.',
+        storyDimension: 'Dimensions: <span class="story-card-value">{dimension}</span>.',
+        storyImage: 'Has <span class="story-card-value">{count}</span> images.',
+
+        // Story Card Actions
+        viewDetails: 'View Details',
+        viewJsonLd: 'View JSON-LD Data',
+
+        // Empty States
+        noCoreInfo: 'No core information found',
+        noSecondaryInfo: 'No detailed information found',
+        noTechnicalInfo: 'No technical information found',
 
         // Footer
         footerText: 'Built for analyzing Linked Art data from cultural heritage institutions',
