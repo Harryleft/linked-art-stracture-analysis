@@ -22,11 +22,6 @@ export class CompleteEntityView {
             });
         });
 
-        // Depth slider
-        this.elements.completeDepth.addEventListener('input', () => {
-            this.elements.completeDepthValue.textContent = this.elements.completeDepth.value;
-        });
-
         // Re-analyze button
         this.elements.completeReanalyze.addEventListener('click', () => {
             if (this.rawJsonData) {
@@ -57,14 +52,13 @@ export class CompleteEntityView {
         this.showLoading();
 
         try {
-            const depth = parseInt(this.elements.completeDepth.value) || 3;
             const resolveRefs = this.elements.completeResolve.checked;
 
             this.parsedEntity = await parseEntity(
                 rawData,
                 fetch.bind(window),
                 new Set(),
-                { resolveReferences: resolveRefs, maxDepth: depth, currentDepth: 0, visited: new Set() }
+                { resolveReferences: resolveRefs, maxDepth: Infinity, currentDepth: 0, visited: new Set() }
             );
 
             const stats = getParsedEntityStats(this.parsedEntity);

@@ -50,8 +50,6 @@ export class UIController {
             completeStatArrays: document.getElementById('complete-stat-arrays'),
             completeStatRefs: document.getElementById('complete-stat-refs'),
             completeStatDepth: document.getElementById('complete-stat-depth'),
-            completeDepth: document.getElementById('complete-depth'),
-            completeDepthValue: document.getElementById('complete-depth-value'),
             completeResolve: document.getElementById('complete-resolve'),
             completeReanalyze: document.getElementById('complete-reanalyze'),
             completeSearch: document.getElementById('complete-search'),
@@ -182,7 +180,12 @@ export class UIController {
     }
 }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    new UIController();
-});
+// Initialize immediately when DOM is ready, or wait for DOMContentLoaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.uiController = new UIController();
+    });
+} else {
+    // DOM is already ready
+    window.uiController = new UIController();
+}
