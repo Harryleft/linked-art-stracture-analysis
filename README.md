@@ -10,7 +10,49 @@ This tool extracts structured information from Linked Art JSON-LD data published
 
 ![01](image/01.jpg)
 
+## Why This Tool
 
+### The Problem
+
+Linked Art data, while structured, is **extremely difficult for non-technical users to understand** in its raw JSON-LD format:
+
+```json
+{
+  "type": "HumanMadeObject",
+  "classified_as": [
+    {"id": "http://vocab.getty.edu/aat/300312355", "type": "Type"}
+  ]
+}
+```
+
+What does `aat:300312355` mean? Curators and researchers shouldn't need to be programmers to understand cultural heritage data.
+
+### Core Value
+
+| Dimension | Value |
+|-----------|-------|
+| **Lower Technical Barriers** | Transforms complex JSON-LD into readable formats for curators and researchers |
+| **Data Insights** | Multiple views (structure tree, complete properties) reveal hidden information |
+| **Real-time Analysis** | Explore GLAM open data via URL without downloading |
+| **Knowledge Connection** | Parses Getty vocabularies (AAT/TGN/ULAN) to connect specialized terminology |
+| **Cross-language** | Bilingual interface facilitates international cultural heritage exchange |
+
+### Use Cases
+
+- **Curatorial Research**: Quickly understand all structured information about an artwork (creator, period, materials, dimensions)
+- **Data Quality Check**: Institutions can verify their published Linked Art data completeness
+- **Digital Humanities**: Scholars can explore data patterns across multiple institutions
+- **Education Tool**: Teach students to understand Linked Art data models
+
+### Target Users
+
+- Museum and gallery researchers
+- Curators
+- Cultural heritage scholars
+- Digital humanities researchers
+- GLAM institution staff
+
+**In short**: This tool is a **translator for cultural heritage data** — converting machine-readable JSON-LD into human-understandable formats, making cultural heritage data truly accessible to the public and researchers.
 
 ## Key Features
 
