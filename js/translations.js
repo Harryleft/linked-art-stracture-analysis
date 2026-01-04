@@ -7,7 +7,7 @@ export const translations = {
     zh: {
         // Header
         title: 'Linked Art 数据分析工具',
-        subtitle: '分析来自博物馆收藏 API 的文化遗产数据',
+        subtitle: '解析来自GLAM的Linked Art 数据',
 
         // Input section
         urlLabel: 'Linked Art URL',
@@ -151,7 +151,7 @@ export const translations = {
     en: {
         // Header
         title: 'Linked Art Analysis Tool',
-        subtitle: 'Analyze and explore cultural heritage data from museum collections APIs',
+        subtitle: 'Parse Linked Art data from GLAM institutions',
 
         // Input section
         urlLabel: 'Linked Art URL',
