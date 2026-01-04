@@ -76,7 +76,8 @@ export class CompleteEntityView {
 
         const topLevelProps = new Map();
         filtered.forEach(item => {
-            const topLevel = item.path.split('.')[0];
+            // Extract the top-level property name, removing array indices like [0], [1], etc.
+            const topLevel = item.path.replace(/\[.*?\]/g, '').split('.')[0];
             if (!topLevelProps.has(topLevel)) {
                 topLevelProps.set(topLevel, item);
             }
