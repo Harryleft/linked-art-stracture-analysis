@@ -50,8 +50,6 @@ export class UIController {
             completeStatArrays: document.getElementById('complete-stat-arrays'),
             completeStatRefs: document.getElementById('complete-stat-refs'),
             completeStatDepth: document.getElementById('complete-stat-depth'),
-            completeResolve: document.getElementById('complete-resolve'),
-            completeReanalyze: document.getElementById('complete-reanalyze'),
             completeSearch: document.getElementById('complete-search'),
             propertyGrid: document.getElementById('property-grid'),
             detailModal: document.getElementById('detail-modal'),

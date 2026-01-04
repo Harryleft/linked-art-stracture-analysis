@@ -13,13 +13,6 @@ export class CompleteEntityView {
     }
 
     init() {
-        // Re-analyze button
-        this.elements.completeReanalyze.addEventListener('click', () => {
-            if (this.rawJsonData) {
-                this.display(this.rawJsonData);
-            }
-        });
-
         // Search
         this.elements.completeSearch.addEventListener('input', () => {
             this.filterPropertyGrid(this.elements.completeSearch.value);
@@ -42,13 +35,11 @@ export class CompleteEntityView {
         this.rawJsonData = rawData;  // Save for navigation
 
         try {
-            const resolveRefs = this.elements.completeResolve.checked;
-
             this.parsedEntity = await parseEntity(
                 rawData,
                 fetch.bind(window),
                 new Set(),
-                { resolveReferences: resolveRefs, maxDepth: Infinity, currentDepth: 0, visited: new Set() }
+                { resolveReferences: true, maxDepth: Infinity, currentDepth: 0, visited: new Set() }
             );
 
             const stats = getParsedEntityStats(this.parsedEntity);
