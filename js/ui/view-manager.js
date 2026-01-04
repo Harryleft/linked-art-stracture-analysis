@@ -132,7 +132,30 @@ export class ViewManager {
             this.elements.jsonldTree.innerHTML = '<div class="not-found">Failed to build tree HTML</div>';
         } else {
             this.elements.jsonldTree.innerHTML = treeHtml;
+            this.attachArrayToggleListeners(); // Bind array toggle events
         }
+    }
+
+    attachArrayToggleListeners() {
+        const toggles = this.elements.jsonldTree.querySelectorAll('.jsonld-tree-toggle');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                // Toggle expanded state
+                const isExpanded = toggle.classList.toggle('expanded');
+
+                // Update icon
+                toggle.textContent = isExpanded ? '▼' : '▶';
+
+                // Toggle children container visibility
+                const treeNode = toggle.closest('.jsonld-tree-node');
+                const children = treeNode?.querySelector('.jsonld-tree-children');
+                if (children) {
+                    children.classList.toggle('collapsed');
+                }
+            });
+        });
     }
 
     buildTreeHtml(node, depth) {
@@ -148,7 +171,30 @@ export class ViewManager {
             html += `<span class="jsonld-tree-key${vocabClass}">${child.key}</span>`;
 
             if (child.isArray) {
+                // Add expand/collapse toggle icon (default collapsed)
+                html += `<span class="jsonld-tree-toggle">▶</span>`;
                 html += `<span class="jsonld-tree-type">[${child.length}]</span>`;
+
+                // Create collapsible container for array items
+                if (child.arrayItems && child.arrayItems.length > 0) {
+                    html += `<div class="jsonld-tree-children collapsed">`;
+                    child.arrayItems.forEach((arrayItem) => {
+                        html += `<div class="jsonld-tree-node">`;
+                        // Show index [0], [1], [2]...
+                        html += `<span class="jsonld-tree-key">[${arrayItem.index}]</span>`;
+
+                        if (arrayItem.isPrimitive) {
+                            html += `<span class="jsonld-tree-value">: ${this.escapeHtml(String(arrayItem.value))}</span>`;
+                        } else if (arrayItem.node && arrayItem.node.children) {
+                            // Recursively render nested object children
+                            arrayItem.node.children.forEach(nestedChild => {
+                                html += this.buildTreeNodeHtml(nestedChild, depth + 2);
+                            });
+                        }
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                }
             } else if (child.type && child.type !== 'object' && child.type !== 'array') {
                 html += `<span class="jsonld-tree-type">: ${child.type}</span>`;
             }
@@ -200,7 +246,30 @@ export class ViewManager {
         html += `<span class="jsonld-tree-key${vocabClass}">${node.key}</span>`;
 
         if (node.isArray) {
+            // Add expand/collapse toggle icon (default collapsed)
+            html += `<span class="jsonld-tree-toggle">▶</span>`;
             html += `<span class="jsonld-tree-type">[${node.length}]</span>`;
+
+            // Create collapsible container for array items
+            if (node.arrayItems && node.arrayItems.length > 0) {
+                html += `<div class="jsonld-tree-children collapsed">`;
+                node.arrayItems.forEach((arrayItem) => {
+                    html += `<div class="jsonld-tree-node">`;
+                    // Show index [0], [1], [2]...
+                    html += `<span class="jsonld-tree-key">[${arrayItem.index}]</span>`;
+
+                    if (arrayItem.isPrimitive) {
+                        html += `<span class="jsonld-tree-value">: ${this.escapeHtml(String(arrayItem.value))}</span>`;
+                    } else if (arrayItem.node && arrayItem.node.children) {
+                        // Recursively render nested object children
+                        arrayItem.node.children.forEach(nestedChild => {
+                            html += this.buildTreeNodeHtml(nestedChild, depth + 1);
+                        });
+                    }
+                    html += `</div>`;
+                });
+                html += `</div>`;
+            }
         } else if (node.type && node.type !== 'object' && node.type !== 'array') {
             html += `<span class="jsonld-tree-type">: ${node.type}</span>`;
         }

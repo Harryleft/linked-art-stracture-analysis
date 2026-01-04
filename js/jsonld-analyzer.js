@@ -554,13 +554,36 @@ export class JsonLdAnalyzer {
             if (Array.isArray(value)) {
                 child.isArray = true;
                 child.length = value.length;
+                child.arrayItems = []; // Store all array elements for expand/collapse
 
-                // Show first item if it's an object
-                if (value.length > 0 && typeof value[0] === 'object' && value[0] !== null) {
-                    const nestedNode = this.buildTreeNode(value[0], `${key}[0]`, childPath + '[0]', depth + 1, maxDepth);
-                    if (nestedNode && nestedNode.children) {
-                        child.children = nestedNode.children; // Complete display - no limit
+                value.forEach((item, index) => {
+                    if (typeof item === 'object' && item !== null) {
+                        const indexedNode = this.buildTreeNode(
+                            item,
+                            `${key}[${index}]`,
+                            childPath + `[${index}]`,
+                            depth + 1,
+                            maxDepth
+                        );
+                        if (indexedNode) {
+                            child.arrayItems.push({
+                                index: index,
+                                node: indexedNode
+                            });
+                        }
+                    } else {
+                        // Primitive values in array
+                        child.arrayItems.push({
+                            index: index,
+                            value: item,
+                            isPrimitive: true
+                        });
                     }
+                });
+
+                // Keep first element in children for backward compatibility
+                if (child.arrayItems.length > 0 && child.arrayItems[0].node && child.arrayItems[0].node.children) {
+                    child.children = child.arrayItems[0].node.children;
                 }
             }
             // Recurse for objects
