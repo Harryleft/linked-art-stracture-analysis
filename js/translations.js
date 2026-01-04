@@ -78,11 +78,20 @@ export const translations = {
         // JSON-LD Structure View
         viewStandard: '标准视图',
         viewJsonLd: 'JSON-LD 结构',
+        viewComplete: '完整实体',
         entityType: '实体类型',
         properties: '属性数量',
         vocabularies: '词表来源',
         vocabReferences: '词表引用',
         propertyTree: '属性结构树',
+        nestedEntities: '嵌套实体',
+        arrays: '数组',
+        references: '引用',
+        maxDepth: '最大深度',
+        depth: '深度',
+        resolveRefs: '解析引用',
+        reanalyze: '重新分析',
+        searchProperties: '搜索属性...',
 
         // Footer
         footerText: '用于分析文化遗产机构的 Linked Art 数据',
@@ -163,11 +172,20 @@ export const translations = {
         // JSON-LD Structure View
         viewStandard: 'Standard',
         viewJsonLd: 'JSON-LD Structure',
+        viewComplete: 'Complete Entity',
         entityType: 'Entity Type',
         properties: 'Properties',
         vocabularies: 'Vocabularies',
         vocabReferences: 'Vocabulary References',
         propertyTree: 'Property Structure',
+        nestedEntities: 'Nested Entities',
+        arrays: 'Arrays',
+        references: 'References',
+        maxDepth: 'Max Depth',
+        depth: 'Depth',
+        resolveRefs: 'Resolve refs',
+        reanalyze: 'Re-analyze',
+        searchProperties: 'Search properties...',
 
         // Footer
         footerText: 'Built for analyzing Linked Art data from cultural heritage institutions',

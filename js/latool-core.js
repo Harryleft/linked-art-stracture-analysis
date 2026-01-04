@@ -73,22 +73,25 @@ export class LinkedArtAnalyzer {
      * Expand all numeric IDs recursively
      */
     expandNumericIds(data) {
+        const self = this;  // Preserve 'this' context
+        const convertFn = this.convertToFullUri.bind(this);  // Bind method to instance
+
         function recursiveExpand(obj) {
             if (Array.isArray(obj)) {
                 return obj.map(item => recursiveExpand(item));
             } else if (obj && typeof obj === 'object') {
                 for (const key in obj) {
                     if (key === 'id' && typeof obj[key] === 'string') {
-                        obj[key] = this.convertToFullUri(obj[key]);
+                        obj[key] = convertFn(obj[key]);
                     } else {
-                        obj[key] = recursiveExpand.call(this, obj[key]);
+                        obj[key] = recursiveExpand(obj[key]);
                     }
                 }
             }
             return obj;
         }
 
-        const expandedData = recursiveExpand.call(this, data);
+        const expandedData = recursiveExpand(data);
         return { expandedData };
     }
 
@@ -740,13 +743,16 @@ export class LinkedArtAnalyzer {
         const { logMode = 'errors', conciseMode = false, foundOnly = false } = options;
 
         try {
+            console.log('[LinkedArtAnalyzer] Fetching data from:', url);
             const data = await this.fetchJson(url);
             if (!data) {
                 throw new Error('Failed to fetch data');
             }
 
+            console.log('[LinkedArtAnalyzer] Data fetched, expanding numeric IDs...');
             const { expandedData } = this.expandNumericIds(data);
 
+            console.log('[LinkedArtAnalyzer] Running patterns...');
             const contentTypes = [
                 { name: 'Web Pages', classified_as: 'http://vocab.getty.edu/aat/300264578' },
                 {

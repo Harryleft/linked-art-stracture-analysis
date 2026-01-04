@@ -127,6 +127,7 @@
                         <div class="view-tabs">
                             <button class="view-tab active" data-view="standard" data-i18n="viewStandard">Standard</button>
                             <button class="view-tab" data-view="jsonld" data-i18n="viewJsonLd">JSON-LD Structure</button>
+                            <button class="view-tab" data-view="complete" data-i18n="viewComplete">Complete Entity</button>
                         </div>
                     </div>
                 </div>
@@ -168,6 +169,117 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Complete Entity View -->
+                <div id="view-complete" class="view-panel hidden">
+                    <div id="complete-container" class="complete-container">
+                        <!-- Summary Dashboard -->
+                        <div class="complete-dashboard">
+                            <div class="complete-header">
+                                <div class="complete-title">
+                                    <h2 class="complete-entity-title" id="complete-entity-title"></h2>
+                                    <p class="complete-entity-id" id="complete-entity-id"></p>
+                                </div>
+                            </div>
+
+                            <div class="complete-stats">
+                                <div class="stat-card">
+                                    <span class="stat-label" data-i18n="properties">Properties</span>
+                                    <span class="stat-value" id="complete-stat-properties">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label" data-i18n="nestedEntities">Nested Entities</span>
+                                    <span class="stat-value" id="complete-stat-nested">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label" data-i18n="arrays">Arrays</span>
+                                    <span class="stat-value" id="complete-stat-arrays">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label" data-i18n="references">References</span>
+                                    <span class="stat-value" id="complete-stat-refs">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label" data-i18n="maxDepth">Max Depth</span>
+                                    <span class="stat-value" id="complete-stat-depth">0</span>
+                                </div>
+                            </div>
+
+                            <div class="complete-controls">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="depth">Depth:</label>
+                                    <input type="range" id="complete-depth" min="1" max="5" value="3" class="range-input">
+                                    <span class="range-value" id="complete-depth-value">3</span>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">
+                                        <input type="checkbox" id="complete-resolve" checked class="checkbox-input">
+                                        <span data-i18n="resolveRefs">Resolve refs</span>
+                                    </label>
+                                </div>
+                                <button id="complete-reanalyze" class="btn btn-small" data-i18n="reanalyze">Re-analyze</button>
+                            </div>
+
+                            <div class="complete-search">
+                                <input type="text" id="complete-search" data-i18n-placeholder="searchProperties" placeholder="Search properties..." class="search-input">
+                            </div>
+                        </div>
+
+                        <!-- UI Method Selector -->
+                        <div class="ui-method-selector">
+                            <span class="method-label">UI Method:</span>
+                            <button class="method-btn active" data-method="sidebar">方案A: 侧边面板</button>
+                            <button class="method-btn" data-method="modal">方案B: 模态弹窗</button>
+                            <button class="method-btn" data-method="inline">方案C: 内联展开</button>
+                        </div>
+
+                        <!-- Property Grid -->
+                        <div class="property-grid" id="property-grid">
+                            <!-- Properties will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- 方案A: Sidebar Detail Panel -->
+                    <div id="detail-sidebar" class="detail-sidebar">
+                        <div class="detail-sidebar-header">
+                            <h3 class="detail-title" id="detail-title">Property Details</h3>
+                            <button id="close-sidebar" class="close-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="detail-sidebar-content" id="detail-sidebar-content">
+                            <!-- Detail content will be rendered here -->
+                        </div>
+                        <div class="detail-sidebar-footer">
+                            <div class="breadcrumb" id="detail-breadcrumb"></div>
+                        </div>
+                    </div>
+
+                    <!-- 方案B: Modal -->
+                    <div id="detail-modal" class="detail-modal">
+                        <div class="modal-overlay"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title" id="modal-title">Property Details</h3>
+                                <button id="close-modal" class="close-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modal-body">
+                                <!-- Detail content will be rendered here -->
+                            </div>
+                            <div class="modal-footer">
+                                <div class="breadcrumb" id="modal-breadcrumb"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
 
@@ -185,6 +297,6 @@
     </div>
 
     <!-- Scripts -->
-    <script type="module" src="js/ui.js"></script>
+    <script type="module" src="js/ui/main.js"></script>
 </body>
 </html>
